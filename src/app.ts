@@ -3,13 +3,14 @@ import "reflect-metadata";
 import cors from "cors";
 import "dotenv/config";
 import {DBConfig} from './config/DBConfig'
-import userRoute from './routes/user.router'
+import userRouter from './routes/user';
+
 
 const app = express();
 const port = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json())
-app.use(app.use("/api",require('./routes')))
+app.use('/api',userRouter)
 
 app.listen(port, () => {
   console.log("Servidor escuchando desde el puerto", port);

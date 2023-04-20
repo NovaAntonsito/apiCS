@@ -1,22 +1,25 @@
-const express = require('express');
-const fs = require('fs')
-const router = express.Router();
+import { Router } from "express";
+import { readdirSync } from "fs";
 
-const PATH_ROUTES = __dirname;
+const PATH_ROUTER = `${__dirname}`;
+const router = Router();
 
-const removeExtension = (fileName : string) => {
-    return fileName.split('.').shift()
-}
+/**
+ *
+ * @returns
+ */
+const cleanFileName = (fileName: string) => {
+  const file = fileName.split(".").shift();
+  return file;
+};
 
-fs.readdirSync(PATH_ROUTES).filter((file : string) => {
-    const name : any = removeExtension(file)
-    console.log(`/${name}.controller`, require(`./${name}`));
-    
-    const skip : any = ['index'].includes(name)
-    if (!skip) {
-        router.use(`/${name}.controller`, require(`./${name}`))
-    }
-})
+readdirSync(PATH_ROUTER).filter((fileName) => {
+  const cleanName = cleanFileName(fileName);
+  if (cleanName !== "index") {
+    import(`./${cleanName}`).then((moduleRouter) => {
+      router.use(`/${cleanName}`, moduleRouter.router);
+    });
+  }
+});
 
-
-module.exports = router;
+export {router}

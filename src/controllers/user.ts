@@ -2,6 +2,7 @@ import { DBConfig } from "../config/DBConfig";
 import { User } from '../models/user';
 import {Request, Response} from 'express'
 import {StatusCodes} from 'http-status-codes'
+import { get } from "http";
 
 const UserRepository = DBConfig.getRepository(User)
 
@@ -33,6 +34,7 @@ export const getOneUser = async (req : Request, res : Response) =>{
     }
     res.send(userFound)
 }
+
 
 export const updateUser = async (req : Request, res : Response) =>{
     const {id} = req.params
