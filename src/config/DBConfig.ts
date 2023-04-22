@@ -7,7 +7,8 @@ export const DBConfig = new DataSource({
     username: process.env.USER,
     password: process.env.PASSWORD,
     database: process.env.DATABASE,
-    entities:["./src/models/*.ts"]
+    entities:["./src/models/*.ts"],
+    synchronize : true
 })
 
 
