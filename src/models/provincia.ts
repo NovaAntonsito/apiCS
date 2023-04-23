@@ -1,8 +1,8 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Sucursales } from './sucursal';
 
 @Entity({name: "Provincia"})
-export class provincia {
+export class Provincia {
     @PrimaryGeneratedColumn()
     id : number
 

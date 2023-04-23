@@ -1,3 +1,4 @@
+import path from 'path';
 import {DataSource} from 'typeorm'
 
 const DBConfig = new DataSource({
@@ -7,12 +8,17 @@ const DBConfig = new DataSource({
     username: process.env.USER,
     password: process.env.PASSWORD,
     database: process.env.DATABASE,
-    entities:["./src/models/*.{js,ts}"],
+    entities:[process.env.NODE_ENV === 'development' ?
+      './src/models/*{.ts,.js}' :
+      './build/models/*.js', // afaik building stuffs are js-only
+    ],
     synchronize : true,
     extra: {
         connectionLimit: 50,
     }
 })
+
+
 DBConfig.initialize()
 .then(async() => {
   console.log("Conexion con la base de datos fue exitosa");

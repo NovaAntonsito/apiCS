@@ -29,7 +29,7 @@ const registerNewUser = async (username:string, password:any , email:string, sur
   const userFound = await UserRepository.findOne({where: { email, username }});
   if (userFound) return false;
   const sucursalesList: Sucursales[] = []
-  for(let i=0; i <= surcursalNames.length;i++){
+  for(let i=0; i < surcursalNames.length;i++){
   const sucursalFound = await SucursalRepository.findOne({where: { name: surcursalNames[i] }}) as Sucursales;
   sucursalesList.push(sucursalFound)
   }
