@@ -4,5 +4,5 @@ export interface auth {
     email : string;
     password : string;
     active? : boolean;
-    sucursalname : string;
+    sucursalname : string[];
 }

@@ -1,5 +1,6 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { provincia } from './provincia';
+import { User } from './user';
 
 @Entity({name: "Sucursal"})
 export class Sucursales{
@@ -9,8 +10,10 @@ export class Sucursales{
 
     @Column()
     name : string
-
-    @ManyToOne(() => provincia, (provincia) => provincia.nombre)
+    @ManyToMany(()=>User,(user) => user.sucursales)
+    users : User[]
+    
+    @ManyToOne(() => provincia, (provincia) => provincia.sucursales)
     provincia : provincia
 
 }
