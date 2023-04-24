@@ -12,10 +12,15 @@ phases:
       - tsc
 
 artifacts:
+secondary-artifacts:
+artifact1:
   files:
     - tsconfig.json
     - .env
     - package.json
     - package-lock.json
-    - 'build/**'
   discard-paths: yes
+artifact2:
+  files:
+    - '**/*'
+  base-directory: 'build'
