@@ -34,4 +34,12 @@ const createSucursal = async (name : string, provinciaName : string) =>{
 }
 
 
-export {createSucursal}
+const deleteSucursal = async (name : string) =>{
+  const sucursalFound = await SucursalRepository.findOne({where:{name}}) as Sucursales
+  if (sucursalFound) return false;
+  await SucursalRepository.delete(sucursalFound)
+  return;
+
+}
+
+export {createSucursal, deleteSucursal}

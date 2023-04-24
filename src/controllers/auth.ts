@@ -1,5 +1,5 @@
-import {Request, Response} from 'express'
-import {registerNewUser,loginUser} from '../services/authServices'
+import { Request, Response } from 'express'
+import { registerNewUser,loginUser } from '../services/authServices'
 import { StatusCodes } from 'http-status-codes';
 
 
@@ -23,6 +23,5 @@ export const loginCtrl = async ({body} : Request, res : Response) => {
     const newJWT = {
         "Access-Token" : data
     }
-    res.send(newJWT)
-    
+    res.send(newJWT)   
 }

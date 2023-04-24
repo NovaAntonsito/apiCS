@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { newSucursal } from '../controllers/sucursal';
+import { delSucursal, newSucursal } from '../controllers/sucursal';
 
 
 
@@ -12,7 +12,7 @@ router.get('')
 router.get('', ()=>{})
 
 //Delete
-router.delete('', ()=>{})
+router.delete('/:name', delSucursal)
 
 //Put-Patch
 router.patch('', ()=>{})
