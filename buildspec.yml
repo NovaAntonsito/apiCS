@@ -17,5 +17,5 @@ artifacts:
     - .env
     - package.json
     - package-lock.json
-    - build/
+    - 'build/'
   discard-paths: yes
