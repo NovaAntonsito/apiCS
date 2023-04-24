@@ -7,7 +7,7 @@ const router = Router();
 
 router.get('', getAllUser)
 
-router.get('/:id', checkJWT, getOneUser)
+router.get('/:id', getOneUser)
 
 router.delete('/:id', userDelete)
 

@@ -5,7 +5,6 @@ import { Sucursales } from '../models/sucursal';
 
 
 
-
 let ProvinciaRepository : Repository<Provincia>
 let SucursalRepository : Repository<Sucursales>
 
@@ -25,9 +24,9 @@ initRepo()
 
 const createSucursal = async (name : string, provinciaName : string) =>{
     const sucursalFound = await SucursalRepository.findOne({where:{name}})
-    if (sucursalFound) throw "Ya existe la sucursal";
+    if (sucursalFound) return false;
     const provinciaFound = await ProvinciaRepository.findOne({where:{nombre : provinciaName}}) as Provincia
-    if (!provinciaFound) throw "No existe la provincia"
+    if (!provinciaFound) return false
     const newSucursal = await SucursalRepository.create({name, provincia : provinciaFound })
     await SucursalRepository.save(newSucursal);
 

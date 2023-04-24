@@ -1,24 +1,27 @@
 import { Router } from 'express';
-import { CreateProvincia } from '../controllers/provincia';
+import { DeleteProvincia, GetAllProvincias, GetOneProvincia, PatchProvincia, PostProvincia } from '../controllers/provincia';
+
+
+
 
 
 const router = Router()
 
 
 //Get One
-router.get('')
+router.get('/:nombre', GetOneProvincia)
 
 //Get All
-router.get('', ()=>{})
+router.get('', GetAllProvincias)
 
 //Delete
-router.delete('', ()=>{})
+router.delete('/:nombre', DeleteProvincia)
 
 //Put-Patch
-router.patch('', ()=>{})
+router.patch('/:id', PatchProvincia)
 
 //Post 
-router.post('',CreateProvincia)
+router.post('',PostProvincia)
 
 
 
