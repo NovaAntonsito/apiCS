@@ -1,5 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column} from 'typeorm'
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from 'typeorm'
 import { tipoPermiso } from './Enums/tipoPermisos';
+import { Role } from './roles';
 
 @Entity({name: 'Permiso'})
 export class permisos {
@@ -12,4 +13,6 @@ export class permisos {
     default: tipoPermiso.READ_ONLY
   })
   tipoPermiso: tipoPermiso;
+  @ManyToOne(() => Role, (Role) => Role.permisos)
+  roles : Role
 }

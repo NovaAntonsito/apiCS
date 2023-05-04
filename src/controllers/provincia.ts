@@ -4,18 +4,17 @@ import { StatusCodes } from 'http-status-codes';
 
 
 
-
-const PostProvincia = async (req: Request, res:Response) =>{
+//TODO Pass every arrow function args Req to {body}
+const PostProvincia = async ({body}: Request, res:Response) =>{
     try{
-    const {nombre} = req.body
-    const provincias = await createProvincia(nombre)
+    const provincias = await createProvincia(body)
     res.send(provincias)
     }catch(e){
         res.status(StatusCodes.CONFLICT).send(e)
     }
 }
 
-const GetAllProvincias = async (req:Request, res:Response)=>{
+const GetAllProvincias = async ({body}:Request, res:Response)=>{
     try {
         const provinciasFound = await viewAllProvincias()
         if(!provinciasFound) throw "No se encontro las provincias" 
@@ -25,10 +24,9 @@ const GetAllProvincias = async (req:Request, res:Response)=>{
     }
 }
 
-const GetOneProvincia =async (req:Request, res:Response) => {
-    try {
-        const nombre = req.params.nombre  
-        const provinciaFound = await viewOneProvincia(nombre)
+const GetOneProvincia =async ({body}:Request, res:Response) => {
+    try { 
+        const provinciaFound = await viewOneProvincia(body)
         if(provinciaFound) throw "No existe la provincia"
         res.send(provinciaFound)
     } catch (e) {
@@ -37,23 +35,23 @@ const GetOneProvincia =async (req:Request, res:Response) => {
     
 }
 
-const DeleteProvincia = async (req:Request, res:Response) => {
+const DeleteProvincia = async ({body}:Request, res:Response) => {
     try {
-        const {nombre} = req.body
-        const provinciaFound = await deleteProvincia(nombre)
+    
+        const provinciaFound = await deleteProvincia(body)
         if(provinciaFound) throw "No existe la provincia"
-        res.status(StatusCodes.OK).send(`${nombre} fue borrado de la base de datos`)
+        res.status(StatusCodes.OK).send(`${body.nombre} fue borrado de la base de datos`)
     } catch (error) {
         res.status(StatusCodes.NOT_FOUND).send(error)
     }
    
 }
-
-const PatchProvincia = async (req:Request, res:Response) => {
+//TODO Fix this 
+const PatchProvincia = async ({body, params}:Request, res:Response) => {
     try{
-    const {nombre} = req.body
-    const id = req.params.id
-    const updatedProvincia = await updateProvincia(nombre,parseInt(id))
+    const id = parseInt(params.id);
+    const nombre = body.nombre;
+    const updatedProvincia = await updateProvincia({nombre, id})
     if(!updatedProvincia) throw "No se encontro el usuario"
     res.status(StatusCodes.OK).send("Se actualizo el usuario")
     }catch(e){

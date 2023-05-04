@@ -16,6 +16,7 @@ const initRepo = async () => {
 };
 
 initRepo();
+//TODO Pass every arrow function args to a userDTO
 export const viewAllUsers = async () => {
   await initRepo()
   const allUsers = await userRepository.createQueryBuilder("user")
@@ -56,3 +57,5 @@ export const deleteUser = async (id: number) => {
   await userRepository.delete(id);
   return confirm;
 };
+
+

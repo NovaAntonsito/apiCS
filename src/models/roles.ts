@@ -1,4 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column} from 'typeorm'
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinTable} from 'typeorm'
+import { permisos } from './permisos';
+import { User } from './user';
 
 
 @Entity({ name: 'roles' })
@@ -9,6 +11,11 @@ export class Role {
   @Column()
   rol: string;
 
- 
-  //TODO Relacion con Permisos-Roles OneToMany
+  @ManyToOne(()=> User, (User) => User.roles)
+  users : User;
+
+  @OneToMany(()=>permisos,(permisos) => permisos.roles)
+  @JoinTable()
+  permisos : permisos[]
+
 }

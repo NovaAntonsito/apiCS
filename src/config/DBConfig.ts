@@ -1,18 +1,16 @@
-import path from 'path';
 import {DataSource} from 'typeorm'
 
 const DBConfig = new DataSource({
     type:'mariadb',
-    host: process.env.HOST,
+    host: process.env.NODE_ENV === 'development' ? 'localhost' : process.env.HOST,
     port: 3306,
-    username: process.env.USER,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE,
+    username: process.env.NODE_ENV === 'development' ? 'root' : process.env.USER,
+    password: process.env.NODE_ENV === 'development' ? 'admin' : process.env.PASSWORD,
+    database: process.env.NODE_ENV === 'development' ? 'DB_Local' : process.env.DATABASE,
     entities:[process.env.NODE_ENV === 'development' ?
       './src/models/*{.ts,.js}' :
       './build/models/*.js', // afaik building stuffs are js-only
     ],
-    synchronize : true,
     extra: {
         connectionLimit: 50,
     }

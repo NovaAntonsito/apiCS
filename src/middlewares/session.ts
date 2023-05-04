@@ -15,8 +15,6 @@ const checkJWT = (req:Request, res: Response, next: NextFunction)=>{
     } catch (e) {
         res.status(StatusCodes.BAD_REQUEST).send("Invalid_Session")
     }
-
-
 }
 
 

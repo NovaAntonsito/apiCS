@@ -2,6 +2,7 @@ import {getDataSource} from '../config/DBConfig'
 import { Repository } from 'typeorm';
 import { Provincia } from '../models/provincia';
 import { Sucursales } from '../models/sucursal';
+import { SucursalDTO } from './interfaces/sucursalDTO';
 
 
 
@@ -22,10 +23,12 @@ const initRepo = async () => {
 
 initRepo()
 
-const createSucursal = async (name : string, provinciaName : string) =>{
+//TODO Pass every arrow function args to a sucursalDTO
+const createSucursal = async ({name, provincia} : SucursalDTO) =>{
+    await initRepo()
     const sucursalFound = await SucursalRepository.findOne({where:{name}})
     if (sucursalFound) return false;
-    const provinciaFound = await ProvinciaRepository.findOne({where:{nombre : provinciaName}}) as Provincia
+    const provinciaFound = await ProvinciaRepository.findOne({where:{nombre : provincia}}) as Provincia
     if (!provinciaFound) return false
     const newSucursal = await SucursalRepository.create({name, provincia : provinciaFound })
     await SucursalRepository.save(newSucursal);
@@ -34,7 +37,8 @@ const createSucursal = async (name : string, provinciaName : string) =>{
 }
 
 
-const deleteSucursal = async (name : string) =>{
+const deleteSucursal = async ({name}: SucursalDTO) =>{
+  await initRepo()
   const sucursalFound = await SucursalRepository.findOne({where:{name}}) as Sucursales
   if (sucursalFound) return false;
   await SucursalRepository.delete(sucursalFound)
@@ -42,4 +46,29 @@ const deleteSucursal = async (name : string) =>{
 
 }
 
-export {createSucursal, deleteSucursal}
+const viewAllSucursales = async () => {
+  await initRepo();
+  const sucursalesFound = await SucursalRepository.find();
+  if(sucursalesFound.length === 0) return false;
+  return sucursalesFound;
+}
+
+const viewOneSucursales = async ({name} : SucursalDTO) =>{
+  await initRepo();
+  const sucursalFound = await SucursalRepository.findOne({where:{name}})
+  if(!sucursalFound) return false;
+  return sucursalFound;
+}
+
+const updateSucursal = async ({id, name, provincia} : SucursalDTO) => {
+  await initRepo();
+  const sucursalFound = await SucursalRepository.findOne({where:{id}})
+  if(!sucursalFound) return false;
+  const provinciaFound = await ProvinciaRepository.findOne({where:{nombre : provincia}}) as Provincia
+  if (!provinciaFound) return false
+  const newSucursal = await SucursalRepository.create({name, provincia : provinciaFound})
+  const updatedSucursal = Object.assign(sucursalFound, newSucursal)
+  return updatedSucursal
+}
+
+export {createSucursal, deleteSucursal, viewAllSucursales, viewOneSucursales, updateSucursal}

@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { deleteUser, viewAllUsers, viewOneUser } from '../services/userServices';
 
-
-export const getAllUser = async ({body}: Request, res: Response) => {
+//TODO Pass every arrow function args Req to {body}
+export const getAllUser = async (req: Request, res: Response) => {
     const allUsers : [] = await viewAllUsers()
     if(allUsers.length === 0){
       res.status(StatusCodes.NOT_FOUND).send("No hay usuarios disponibles")

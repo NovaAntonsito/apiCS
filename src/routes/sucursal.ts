@@ -1,15 +1,15 @@
 import { Router } from 'express';
-import { delSucursal, newSucursal } from '../controllers/sucursal';
+import { delSucursal, getAllSurcursales, getOneSucursal, newSucursal } from '../controllers/sucursal';
 
 
 
 const router = Router()
 
 //Get One
-router.get('')
+router.get('/:name', getOneSucursal)
 
 //Get All
-router.get('', ()=>{})
+router.get('', getAllSurcursales)
 
 //Delete
 router.delete('/:name', delSucursal)

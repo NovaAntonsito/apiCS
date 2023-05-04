@@ -1,4 +1,4 @@
-import { auth } from "../controllers/interfaces/auth.interface";
+import { userDTO } from './interfaces/userDTO';
 import { getDataSource } from "../config/DBConfig";
 import { User } from "../models/user";
 import { Sucursales } from "../models/sucursal";
@@ -22,12 +22,7 @@ const initRepo = async () => {
 
 initRepo();
 
-const registerNewUser = async (
-  username: string,
-  password: any,
-  email: string,
-  surcursalNames: string[]
-) => {
+const registerNewUser = async ({username,password,email,sucursalNames}: userDTO) => {
   try {
     await initRepo();
     const userFound = await UserRepository.findOne({
@@ -35,14 +30,16 @@ const registerNewUser = async (
     });
     if (userFound) return false;
     const sucursalesList: Sucursales[] = [];
-    for (let i = 0; i < surcursalNames.length; i++) {
+    if(sucursalNames){
+    for (let i = 0; i < sucursalNames.length; i++) {
       const sucursalFound = (await SucursalRepository.findOne({
-        where: { name: surcursalNames[i] },
+        where: { name: sucursalNames[i] },
       })) as Sucursales;
       sucursalesList.push(sucursalFound);
     }
-    const passHashed = await encrypt(password);
-
+  }
+    const passHashed = await encrypt(password as string);
+  
     const newUser = UserRepository.create({
       email,
       password: passHashed,
@@ -56,14 +53,29 @@ const registerNewUser = async (
   }
 };
 
-const loginUser = async ({ email, password }: auth) => {
+const loginUser = async ({ email, password }: userDTO) => {
   await initRepo();
   const userFound = await UserRepository.findOne({ where: { email } });
   if (!userFound) return false;
-  const passValid = await verifyPass(userFound.password, password);
+  const passSend= password as string;
+  const passValid = await verifyPass(userFound.password, passSend);
   if (!passValid) return false;
+  userFound.active = true;
+  await UserRepository.save(userFound)
   const tokenJWT = genToken(userFound.username);
   return tokenJWT;
 };
 
-export { registerNewUser, loginUser };
+const forgotPass = async ({email, password}: userDTO) =>{
+  await initRepo();
+  const userFound = await UserRepository.findOne({where:{email}});
+  if(!userFound) return false;
+  const newPassword = password as string;
+  userFound.password = newPassword;   
+  await UserRepository.save(userFound)
+  return userFound;
+}
+
+
+
+export { registerNewUser, loginUser, forgotPass };

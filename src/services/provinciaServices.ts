@@ -2,6 +2,7 @@ import { getDataSource } from "../config/DBConfig";
 import { Repository } from "typeorm";
 import { Provincia } from "../models/provincia";
 import { Sucursales } from "../models/sucursal";
+import { provinciaDTO } from './interfaces/provinciaDTO';
 
 let ProvinciaRepository: Repository<Provincia>;
 let SucursalRepository: Repository<Sucursales>;
@@ -19,7 +20,9 @@ const initRepo = async () => {
 
 initRepo();
 
-const createProvincia = async (nombre: string) => {
+
+//TODO Pass every arrow function args to a provinciaDTO
+const createProvincia = async ({nombre} : provinciaDTO) => {
   await initRepo();
   const provinciaFound = await ProvinciaRepository.findOne({
     where: { nombre },
@@ -37,14 +40,14 @@ const viewAllProvincias = async () => {
   return provinciaFound;
 };
 
-const viewOneProvincia = async (nombre: string) => {
+const viewOneProvincia = async ({nombre}: provinciaDTO) => {
   await initRepo();
-  const provinciaFound = await ProvinciaRepository.find({ where: { nombre } });
+  const provinciaFound = await ProvinciaRepository.find({ where: { nombre} });
   if (!provinciaFound) return false;
   return provinciaFound;
 };
 
-const deleteProvincia = async (nombre: string) => {
+const deleteProvincia = async ({nombre} :provinciaDTO) => {
   await initRepo();
   const provinciaFound = await ProvinciaRepository.findOne({
     where: { nombre },
@@ -54,11 +57,11 @@ const deleteProvincia = async (nombre: string) => {
   return true;
 };
 
-const updateProvincia = async (nombre: string, id: number) => {
+const updateProvincia = async ({nombre, id} : provinciaDTO) => {
   await initRepo();
-  const provinciaFound = await ProvinciaRepository.findOne({ where: { id } });
+  const provinciaFound = await ProvinciaRepository.findOne({ where: { id  } });
   if (!provinciaFound) return false;
-  const provinciaToUpdate = await ProvinciaRepository.create({ nombre });
+  const provinciaToUpdate = await ProvinciaRepository.create({ nombre  });
   const updatedProvincia = Object.assign(provinciaFound, provinciaToUpdate);
   await ProvinciaRepository.save(updatedProvincia);
   return updatedProvincia;

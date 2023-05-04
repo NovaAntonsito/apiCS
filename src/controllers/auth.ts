@@ -1,12 +1,11 @@
 import { Request, Response } from 'express'
-import { registerNewUser,loginUser } from '../services/authServices'
+import { registerNewUser,loginUser, forgotPass } from '../services/authServices'
 import { StatusCodes } from 'http-status-codes';
 
 
 
-export const registerCtrl = async ({body} : Request, res: Response) => {
-    const {username, password, email, surcursalNames} = body
-    const newUser = await registerNewUser(username, password, email, surcursalNames)
+const registerCtrl = async ({body} : Request, res: Response) => { 
+    const newUser = await registerNewUser(body)
     if(newUser === false){
         res.status(StatusCodes.CONFLICT).send("Ya existe el usuario")
         return;
@@ -14,7 +13,7 @@ export const registerCtrl = async ({body} : Request, res: Response) => {
     res.send(newUser) 
 }
 
-export const loginCtrl = async ({body} : Request, res : Response) => {
+const loginCtrl = async ({body} : Request, res : Response) => {
     const data = await loginUser(body)
     if(data === false){
         res.status(StatusCodes.BAD_REQUEST).send("Contraseña Incorrecta")
@@ -25,3 +24,17 @@ export const loginCtrl = async ({body} : Request, res : Response) => {
     }
     res.send(newJWT)   
 }
+
+const updateUser =async ({body}:Request, res:Response) => {
+    try{
+    const data = await forgotPass(body)
+    if (!data) throw "No se pudo actualizar el usuario";
+    res.send({user: data, mensaje: "Fue actualizado"})
+    }catch(error){
+        res.status(StatusCodes.BAD_REQUEST).send(error)
+    }
+}
+
+
+
+export {loginCtrl, registerCtrl, updateUser}

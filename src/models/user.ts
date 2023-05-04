@@ -1,5 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, ManyToMany, JoinTable} from 'typeorm'
+import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany} from 'typeorm'
 import { Sucursales } from './sucursal';
+import { Role } from './roles';
 
 @Entity({name: "Usuario"})
 export class User{
@@ -13,6 +14,10 @@ export class User{
     password : string;
     @Column({nullable: true})
     active : boolean;
+
+    @OneToMany(() => Role, (Role) => Role.users)
+    @JoinTable()
+    roles : Role[]
     
     @ManyToMany(()=>Sucursales,(sucursales)=> sucursales.users)
     @JoinTable()
