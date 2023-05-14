@@ -16,8 +16,8 @@ const newSucursal = async ({body}:Request, res:Response) =>{
 
 const delSucursal = async ({params}:Request, res:Response) =>{
     try {
-        const provincia : string = params.name
-        const deleteSucursalActual = await deleteSucursal({provincia})
+        const id : number = parseInt(params.id)
+        const deleteSucursalActual = await deleteSucursal({id})
         if(deleteSucursalActual) throw "No existe la sucursal";
         res.send(`La sucursal fue borrado`).status(StatusCodes.OK)
     } catch (error) {
