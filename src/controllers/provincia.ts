@@ -24,10 +24,17 @@ const GetAllProvincias = async ({body}:Request, res:Response)=>{
     }
 }
 
-const GetOneProvincia =async ({body}:Request, res:Response) => {
+const GetOneProvincia =async ({params}:Request, res:Response) => {
     try { 
-        const provinciaFound = await viewOneProvincia(body)
-        if(provinciaFound) throw "No existe la provincia"
+        console.log("estoy en el getOneProvincia")
+        const id:number = parseInt(params.id);
+            //TODO Fix this 
+        // const provinciaFound = await viewOneProvincia(body)
+        // if(!provinciaFound) throw "No existe la provincia"
+        // res.send(provinciaFound)
+        const provinciaFound = await viewOneProvincia({id})
+        console.log(provinciaFound)
+        if(!provinciaFound) throw "No existe la provincia"
         res.send(provinciaFound)
     } catch (e) {
         res.status(StatusCodes.NOT_FOUND).send(e)

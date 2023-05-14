@@ -8,14 +8,16 @@ import { DeleteProvincia, GetAllProvincias, GetOneProvincia, PatchProvincia, Pos
 const router = Router()
 
 
-//Get One
-router.get('/:nombre', GetOneProvincia)
+
 
 //Get All
 router.get('', GetAllProvincias)
 
+//Get One
+router.get('/:id', GetOneProvincia)
+
 //Delete
-router.delete('/:nombre', DeleteProvincia)
+router.delete('/:id', DeleteProvincia)
 
 //Put-Patch
 router.patch('/:id', PatchProvincia)

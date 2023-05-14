@@ -36,21 +36,23 @@ const createProvincia = async ({nombre} : provinciaDTO) => {
 const viewAllProvincias = async () => {
   await initRepo();
   const provinciaFound = await ProvinciaRepository.find();
-  if (provinciaFound.length === 0) return false;
-  return provinciaFound;
-};
-
-const viewOneProvincia = async ({nombre}: provinciaDTO) => {
-  await initRepo();
-  const provinciaFound = await ProvinciaRepository.find({ where: { nombre} });
   if (!provinciaFound) return false;
   return provinciaFound;
 };
 
-const deleteProvincia = async ({nombre} :provinciaDTO) => {
+const viewOneProvincia = async ({id}: provinciaDTO) => {
+  await initRepo();
+  console.log(id);
+  
+  const provinciaFound = await ProvinciaRepository.findOne({ where: { id} });
+  if (!provinciaFound) return false;
+  return provinciaFound;
+};
+
+const deleteProvincia = async ({id} :provinciaDTO) => {
   await initRepo();
   const provinciaFound = await ProvinciaRepository.findOne({
-    where: { nombre },
+    where: { id },
   });
   if (!provinciaFound) return false;
   const deletedProvincia = await ProvinciaRepository.delete(provinciaFound);
