@@ -29,8 +29,8 @@ const delSucursal = async ({params}:Request, res:Response) =>{
 const getAllSurcursales = async (req:Request, res:Response) => {
     try {
         const sucursalesFound = await viewAllSucursales();
-        if(sucursalesFound) throw "No hay usuarios en la base de datos"
-        res.send(sucursalesFound)
+        if(!sucursalesFound) throw "No hay usuarios en la base de datos"
+        res.send(sucursalesFound).status(StatusCodes.OK)
     } catch (error) {
         res.status(StatusCodes.NOT_FOUND).send(error)
     }
@@ -38,9 +38,9 @@ const getAllSurcursales = async (req:Request, res:Response) => {
 
 const getOneSucursal = async ({params}:Request, res:Response)=>{
     try {
-        const name : string = params.name
-        const sucursalFound = await viewOneSucursales({name})
-        if(sucursalFound) throw "No se encontro la sucursal"
+        const id = parseInt(params.id)
+        const sucursalFound = await viewOneSucursales({id})
+        if(!sucursalFound) throw "No se encontro la sucursal"
         res.send(sucursalFound)
     } catch (error) {
         res.status(StatusCodes.NOT_FOUND).send(error)
@@ -60,4 +60,4 @@ const putSucursal = async ({body, params}:Request, res:Response) => {
 }
 
 
-export{newSucursal, delSucursal, getAllSurcursales, getOneSucursal}
+export{newSucursal, delSucursal, getAllSurcursales, getOneSucursal, putSucursal}

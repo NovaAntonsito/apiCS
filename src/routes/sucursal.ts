@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import { delSucursal, getAllSurcursales, getOneSucursal, newSucursal } from '../controllers/sucursal';
+import { delSucursal, getAllSurcursales, getOneSucursal, newSucursal , putSucursal} from '../controllers/sucursal';
 
 
 
 const router = Router()
 
 //Get One
-router.get('/:name', getOneSucursal)
+router.get('/:id', getOneSucursal)
 
 //Get All
 router.get('', getAllSurcursales)
@@ -15,7 +15,7 @@ router.get('', getAllSurcursales)
 router.delete('/:name', delSucursal)
 
 //Put-Patch
-router.patch('', ()=>{})
+router.patch('', putSucursal)
 
 //Post 
 router.post('',newSucursal)

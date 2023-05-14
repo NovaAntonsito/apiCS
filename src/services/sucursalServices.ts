@@ -49,13 +49,14 @@ const deleteSucursal = async ({name}: SucursalDTO) =>{
 const viewAllSucursales = async () => {
   await initRepo();
   const sucursalesFound = await SucursalRepository.find();
-  if(sucursalesFound.length === 0) return false;
+  if(!sucursalesFound) return false;
   return sucursalesFound;
 }
 
-const viewOneSucursales = async ({name} : SucursalDTO) =>{
+const viewOneSucursales = async ({id} : SucursalDTO) =>{
   await initRepo();
-  const sucursalFound = await SucursalRepository.findOne({where:{name}})
+  const sucursalFound = await SucursalRepository.findOne({where:{id}})
+  console.log(sucursalFound)
   if(!sucursalFound) return false;
   return sucursalFound;
 }
