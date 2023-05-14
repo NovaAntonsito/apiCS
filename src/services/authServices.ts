@@ -22,29 +22,28 @@ const initRepo = async () => {
 
 initRepo();
 
-const registerNewUser = async ({username,password,email,sucursalNames}: userDTO) => {
+const registerNewUser = async ({username,password,email,sucursales}: userDTO) => {
   try {
     await initRepo();
     const userFound = await UserRepository.findOne({
       where: { email, username },
     });
     if (userFound) return false;
-    const sucursalesList: Sucursales[] = [];
-    if(sucursalNames){
-    for (let i = 0; i < sucursalNames.length; i++) {
-      const sucursalFound = (await SucursalRepository.findOne({
-        where: { name: sucursalNames[i] },
-      })) as Sucursales;
-      sucursalesList.push(sucursalFound);
-    }
-  }
+    let sucursalList : Sucursales[] = [];
+    if(!sucursales) return;
+    sucursales.map(async sucursal =>{
+      const sucursalFound = await SucursalRepository.findOne({where:{ id : sucursal.id, name : sucursal.name}})
+      if (sucursalFound) {
+        sucursalList.push(sucursalFound);
+      }
+    })
     const passHashed = await encrypt(password as string);
   
     const newUser = UserRepository.create({
       email,
       password: passHashed,
       username,
-      sucursales: sucursalesList,
+      sucursales: sucursalList,
     });
     await UserRepository.save(newUser);
     return newUser;

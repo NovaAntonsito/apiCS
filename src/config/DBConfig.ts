@@ -5,7 +5,7 @@ const DBConfig = new DataSource({
     host: process.env.NODE_ENV === 'development' ? 'localhost' : process.env.HOST,
     port: 3306,
     username: process.env.NODE_ENV === 'development' ? 'root' : process.env.USER,
-    password: process.env.NODE_ENV === 'development' ? 'admin' : process.env.PASSWORD,
+    password: process.env.NODE_ENV === 'development' ? '1234' : process.env.PASSWORD,
     database: process.env.NODE_ENV === 'development' ? 'DB_Local' : process.env.DATABASE,
     entities:[process.env.NODE_ENV === 'development' ?
       './src/models/*{.ts,.js}' :
@@ -13,15 +13,9 @@ const DBConfig = new DataSource({
     ],
     extra: {
         connectionLimit: 50,
-    }
+    },
+    synchronize: true
 })
-console.log(process.env.NODE_ENV === 'development' ? 'localhost' : process.env.HOST);
-console.log(process.env.NODE_ENV === 'development' ? 'root' : process.env.USER);
-console.log(process.env.NODE_ENV === 'development' ? 'admin' : process.env.PASSWORD);
-console.log(process.env.NODE_ENV === 'development' ? 'DB_Local' : process.env.DATABASE);
-console.log(process.env.NODE_ENV === 'development' ? './src/models/*{.ts,.js}' :'./build/models/*.js');
-
-
 
 
 
