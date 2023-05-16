@@ -1,0 +1,535 @@
+From d902824448efd0609ea609affb02db170c2060e0 Mon Sep 17 00:00:00 2001
+From: Cristian Anton <canton@randstad.com.ar>
+Date: Tue, 16 May 2023 18:24:29 -0300
+Subject: [PATCH] Nuevos cambios en sucursal
+
+---
+ ...le-agrego-las-relaciones-en-sucursal.patch | 372 ++++++++++++++++++
+ src/controllers/sucursal.ts                   |  56 +--
+ src/routes/sucursal.ts                        |   2 +-
+ src/services/sucursalServices.ts              |   9 +-
+ 4 files changed, 408 insertions(+), 31 deletions(-)
+ create mode 100644 0001-se-le-agrego-las-relaciones-en-sucursal.patch
+
+diff --git a/0001-se-le-agrego-las-relaciones-en-sucursal.patch b/0001-se-le-agrego-las-relaciones-en-sucursal.patch
+new file mode 100644
+index 0000000..f4b58fc
+--- /dev/null
++++ b/0001-se-le-agrego-las-relaciones-en-sucursal.patch
+@@ -0,0 +1,372 @@
++From f1199fe6d1912d14932d8ecee1db8c70772453af Mon Sep 17 00:00:00 2001
++From: Cristian Anton <canton@randstad.com.ar>
++Date: Sun, 14 May 2023 17:41:49 -0300
++Subject: [PATCH] se le agrego las relaciones en sucursal
++
++---
++ 0001-le-hice-cambios-en-provincia.patch | 249 ++++++++++++++++++++++++
++ src/controllers/sucursal.ts             |   4 +-
++ src/services/interfaces/provinciaDTO.ts |   4 +-
++ src/services/interfaces/sucursalDTO.ts  |   9 +-
++ src/services/sucursalServices.ts        |  13 +-
++ 5 files changed, 268 insertions(+), 11 deletions(-)
++ create mode 100644 0001-le-hice-cambios-en-provincia.patch
++
++diff --git a/0001-le-hice-cambios-en-provincia.patch b/0001-le-hice-cambios-en-provincia.patch
++new file mode 100644
++index 0000000..782dc9a
++--- /dev/null
+++++ b/0001-le-hice-cambios-en-provincia.patch
++@@ -0,0 +1,249 @@
+++From 4ca58cb3aeea740a3327d4326eb0afa1e3f1e61f Mon Sep 17 00:00:00 2001
+++From: Cristian Anton <canton@randstad.com.ar>
+++Date: Sun, 14 May 2023 15:47:01 -0300
+++Subject: [PATCH] le hice cambios en provincia
+++
+++---
+++ .env                                   |   2 +-
+++ 0001-Le-hice-cambios-en-sucursal.patch | 133 +++++++++++++++++++++++++
+++ src/controllers/provincia.ts           |  13 ++-
+++ src/routes/provincia.ts                |   8 +-
+++ src/services/provinciaServices.ts      |  12 ++-
+++ 5 files changed, 156 insertions(+), 12 deletions(-)
+++ create mode 100644 0001-Le-hice-cambios-en-sucursal.patch
+++
+++diff --git a/.env b/.env
+++index 0c37dd2..ea1a77b 100644
+++--- a/.env
++++++ b/.env
+++@@ -1,5 +1,5 @@
+++ PORT=3000
+++-HOST=192.168.1.141
++++HOST=192.168.1.46
+++ PORTDB=3306
+++ USER=root
+++ PASSWORD=ojoseco6971
+++diff --git a/0001-Le-hice-cambios-en-sucursal.patch b/0001-Le-hice-cambios-en-sucursal.patch
+++new file mode 100644
+++index 0000000..231946a
+++--- /dev/null
++++++ b/0001-Le-hice-cambios-en-sucursal.patch
+++@@ -0,0 +1,133 @@
++++From 8362ad897f77d5e03edc41a54dc4cfc30f227c03 Mon Sep 17 00:00:00 2001
++++From: Cristian Anton <canton@randstad.com.ar>
++++Date: Sun, 14 May 2023 01:30:58 -0300
++++Subject: [PATCH] Le hice cambios en sucursal
++++
++++---
++++ .env                             |  8 ++++----
++++ src/config/DBConfig.ts           |  2 +-
++++ src/controllers/sucursal.ts      | 12 ++++++------
++++ src/routes/sucursal.ts           |  6 +++---
++++ src/services/sucursalServices.ts |  7 ++++---
++++ 5 files changed, 18 insertions(+), 17 deletions(-)
++++
++++diff --git a/.env b/.env
++++index b6e9cfc..0c37dd2 100644
++++--- a/.env
+++++++ b/.env
++++@@ -1,8 +1,8 @@
++++ PORT=3000
++++-HOST=cambiodbtest.cjwysjzudbc8.us-east-1.rds.amazonaws.com
+++++HOST=192.168.1.141
++++ PORTDB=3306
++++-USER=admin
++++-PASSWORD=ojoseco1
++++-DATABASE=DB_RDS_AWS
+++++USER=root
+++++PASSWORD=ojoseco6971
+++++DATABASE=cambiotest
++++ JWT_SECRET=Spaghetti_Western_Trotamundo
++++ NODE_ENV=testaws 
++++\ No newline at end of file
++++diff --git a/src/config/DBConfig.ts b/src/config/DBConfig.ts
++++index 74dd663..fb6dee6 100644
++++--- a/src/config/DBConfig.ts
+++++++ b/src/config/DBConfig.ts
++++@@ -14,7 +14,7 @@ const DBConfig = new DataSource({
++++     extra: {
++++         connectionLimit: 50,
++++     },
++++-    synchronize: true
+++++    //synchronize: true
++++ })
++++ 
++++ 
++++diff --git a/src/controllers/sucursal.ts b/src/controllers/sucursal.ts
++++index b713051..69e5313 100644
++++--- a/src/controllers/sucursal.ts
+++++++ b/src/controllers/sucursal.ts
++++@@ -29,8 +29,8 @@ const delSucursal = async ({params}:Request, res:Response) =>{
++++ const getAllSurcursales = async (req:Request, res:Response) => {
++++     try {
++++         const sucursalesFound = await viewAllSucursales();
++++-        if(sucursalesFound) throw "No hay usuarios en la base de datos"
++++-        res.send(sucursalesFound)
+++++        if(!sucursalesFound) throw "No hay usuarios en la base de datos"
+++++        res.send(sucursalesFound).status(StatusCodes.OK)
++++     } catch (error) {
++++         res.status(StatusCodes.NOT_FOUND).send(error)
++++     }
++++@@ -38,9 +38,9 @@ const getAllSurcursales = async (req:Request, res:Response) => {
++++ 
++++ const getOneSucursal = async ({params}:Request, res:Response)=>{
++++     try {
++++-        const name : string = params.name
++++-        const sucursalFound = await viewOneSucursales({name})
++++-        if(sucursalFound) throw "No se encontro la sucursal"
+++++        const id = parseInt(params.id)
+++++        const sucursalFound = await viewOneSucursales({id})
+++++        if(!sucursalFound) throw "No se encontro la sucursal"
++++         res.send(sucursalFound)
++++     } catch (error) {
++++         res.status(StatusCodes.NOT_FOUND).send(error)
++++@@ -60,4 +60,4 @@ const putSucursal = async ({body, params}:Request, res:Response) => {
++++ }
++++ 
++++ 
++++-export{newSucursal, delSucursal, getAllSurcursales, getOneSucursal}
++++\ No newline at end of file
+++++export{newSucursal, delSucursal, getAllSurcursales, getOneSucursal, putSucursal}
++++\ No newline at end of file
++++diff --git a/src/routes/sucursal.ts b/src/routes/sucursal.ts
++++index 6acfe08..da83d65 100644
++++--- a/src/routes/sucursal.ts
+++++++ b/src/routes/sucursal.ts
++++@@ -1,12 +1,12 @@
++++ import { Router } from 'express';
++++-import { delSucursal, getAllSurcursales, getOneSucursal, newSucursal } from '../controllers/sucursal';
+++++import { delSucursal, getAllSurcursales, getOneSucursal, newSucursal , putSucursal} from '../controllers/sucursal';
++++ 
++++ 
++++ 
++++ const router = Router()
++++ 
++++ //Get One
++++-router.get('/:name', getOneSucursal)
+++++router.get('/:id', getOneSucursal)
++++ 
++++ //Get All
++++ router.get('', getAllSurcursales)
++++@@ -15,7 +15,7 @@ router.get('', getAllSurcursales)
++++ router.delete('/:name', delSucursal)
++++ 
++++ //Put-Patch
++++-router.patch('', ()=>{})
+++++router.patch('', putSucursal)
++++ 
++++ //Post 
++++ router.post('',newSucursal)
++++diff --git a/src/services/sucursalServices.ts b/src/services/sucursalServices.ts
++++index 66009af..bdae3a4 100644
++++--- a/src/services/sucursalServices.ts
+++++++ b/src/services/sucursalServices.ts
++++@@ -49,13 +49,14 @@ const deleteSucursal = async ({name}: SucursalDTO) =>{
++++ const viewAllSucursales = async () => {
++++   await initRepo();
++++   const sucursalesFound = await SucursalRepository.find();
++++-  if(sucursalesFound.length === 0) return false;
+++++  if(!sucursalesFound) return false;
++++   return sucursalesFound;
++++ }
++++ 
++++-const viewOneSucursales = async ({name} : SucursalDTO) =>{
+++++const viewOneSucursales = async ({id} : SucursalDTO) =>{
++++   await initRepo();
++++-  const sucursalFound = await SucursalRepository.findOne({where:{name}})
+++++  const sucursalFound = await SucursalRepository.findOne({where:{id}})
+++++  console.log(sucursalFound)
++++   if(!sucursalFound) return false;
++++   return sucursalFound;
++++ }
++++-- 
++++2.35.1.windows.2
++++
+++diff --git a/src/controllers/provincia.ts b/src/controllers/provincia.ts
+++index 39753dc..0c23a3c 100644
+++--- a/src/controllers/provincia.ts
++++++ b/src/controllers/provincia.ts
+++@@ -24,10 +24,17 @@ const GetAllProvincias = async ({body}:Request, res:Response)=>{
+++     }
+++ }
+++ 
+++-const GetOneProvincia =async ({body}:Request, res:Response) => {
++++const GetOneProvincia =async ({params}:Request, res:Response) => {
+++     try { 
+++-        const provinciaFound = await viewOneProvincia(body)
+++-        if(provinciaFound) throw "No existe la provincia"
++++        console.log("estoy en el getOneProvincia")
++++        const id:number = parseInt(params.id);
++++            //TODO Fix this 
++++        // const provinciaFound = await viewOneProvincia(body)
++++        // if(!provinciaFound) throw "No existe la provincia"
++++        // res.send(provinciaFound)
++++        const provinciaFound = await viewOneProvincia({id})
++++        console.log(provinciaFound)
++++        if(!provinciaFound) throw "No existe la provincia"
+++         res.send(provinciaFound)
+++     } catch (e) {
+++         res.status(StatusCodes.NOT_FOUND).send(e)
+++diff --git a/src/routes/provincia.ts b/src/routes/provincia.ts
+++index 64ce004..d1d95fb 100644
+++--- a/src/routes/provincia.ts
++++++ b/src/routes/provincia.ts
+++@@ -8,14 +8,16 @@ import { DeleteProvincia, GetAllProvincias, GetOneProvincia, PatchProvincia, Pos
+++ const router = Router()
+++ 
+++ 
+++-//Get One
+++-router.get('/:nombre', GetOneProvincia)
++++
+++ 
+++ //Get All
+++ router.get('', GetAllProvincias)
+++ 
++++//Get One
++++router.get('/:id', GetOneProvincia)
++++
+++ //Delete
+++-router.delete('/:nombre', DeleteProvincia)
++++router.delete('/:id', DeleteProvincia)
+++ 
+++ //Put-Patch
+++ router.patch('/:id', PatchProvincia)
+++diff --git a/src/services/provinciaServices.ts b/src/services/provinciaServices.ts
+++index aba4981..39a475f 100644
+++--- a/src/services/provinciaServices.ts
++++++ b/src/services/provinciaServices.ts
+++@@ -36,21 +36,23 @@ const createProvincia = async ({nombre} : provinciaDTO) => {
+++ const viewAllProvincias = async () => {
+++   await initRepo();
+++   const provinciaFound = await ProvinciaRepository.find();
+++-  if (provinciaFound.length === 0) return false;
++++  if (!provinciaFound) return false;
+++   return provinciaFound;
+++ };
+++ 
+++-const viewOneProvincia = async ({nombre}: provinciaDTO) => {
++++const viewOneProvincia = async ({id}: provinciaDTO) => {
+++   await initRepo();
+++-  const provinciaFound = await ProvinciaRepository.find({ where: { nombre} });
++++  console.log(id);
++++  
++++  const provinciaFound = await ProvinciaRepository.findOne({ where: { id} });
+++   if (!provinciaFound) return false;
+++   return provinciaFound;
+++ };
+++ 
+++-const deleteProvincia = async ({nombre} :provinciaDTO) => {
++++const deleteProvincia = async ({id} :provinciaDTO) => {
+++   await initRepo();
+++   const provinciaFound = await ProvinciaRepository.findOne({
+++-    where: { nombre },
++++    where: { id },
+++   });
+++   if (!provinciaFound) return false;
+++   const deletedProvincia = await ProvinciaRepository.delete(provinciaFound);
+++-- 
+++2.35.1.windows.2
+++
++diff --git a/src/controllers/sucursal.ts b/src/controllers/sucursal.ts
++index 69e5313..c5ee8f2 100644
++--- a/src/controllers/sucursal.ts
+++++ b/src/controllers/sucursal.ts
++@@ -16,8 +16,8 @@ const newSucursal = async ({body}:Request, res:Response) =>{
++ 
++ const delSucursal = async ({params}:Request, res:Response) =>{
++     try {
++-        const provincia : string = params.name
++-        const deleteSucursalActual = await deleteSucursal({provincia})
+++        const id : number = parseInt(params.id)
+++        const deleteSucursalActual = await deleteSucursal({id})
++         if(deleteSucursalActual) throw "No existe la sucursal";
++         res.send(`La sucursal fue borrado`).status(StatusCodes.OK)
++     } catch (error) {
++diff --git a/src/services/interfaces/provinciaDTO.ts b/src/services/interfaces/provinciaDTO.ts
++index aaf3e1f..c6ca1e6 100644
++--- a/src/services/interfaces/provinciaDTO.ts
+++++ b/src/services/interfaces/provinciaDTO.ts
++@@ -1,5 +1,7 @@
+++import { SucursalDTO } from "./sucursalDTO";
+++
++ export interface provinciaDTO{
++     id? : number,
++     nombre? : string,
++-    sucursalesName? : string[]
+++    sucursalesName? : SucursalDTO[]
++ }
++\ No newline at end of file
++diff --git a/src/services/interfaces/sucursalDTO.ts b/src/services/interfaces/sucursalDTO.ts
++index 2770bdf..dd7abe1 100644
++--- a/src/services/interfaces/sucursalDTO.ts
+++++ b/src/services/interfaces/sucursalDTO.ts
++@@ -1,6 +1,13 @@
+++import { provinciaDTO } from "./provinciaDTO";
+++
+++interface Provincia{
+++    id? : number,
+++    nombre? : string,
+++}
+++
++ export interface SucursalDTO {
++     id? : number;
++     name? : string;
++     user? : string[];
++-    provincia? : string;
+++    provincia? : provinciaDTO;
++ }
++diff --git a/src/services/sucursalServices.ts b/src/services/sucursalServices.ts
++index bdae3a4..21317c9 100644
++--- a/src/services/sucursalServices.ts
+++++ b/src/services/sucursalServices.ts
++@@ -28,7 +28,7 @@ const createSucursal = async ({name, provincia} : SucursalDTO) =>{
++     await initRepo()
++     const sucursalFound = await SucursalRepository.findOne({where:{name}})
++     if (sucursalFound) return false;
++-    const provinciaFound = await ProvinciaRepository.findOne({where:{nombre : provincia}}) as Provincia
+++    const provinciaFound = await ProvinciaRepository.findOne({where:{id : provincia?.id}}) as Provincia
++     if (!provinciaFound) return false
++     const newSucursal = await SucursalRepository.create({name, provincia : provinciaFound })
++     await SucursalRepository.save(newSucursal);
++@@ -37,9 +37,9 @@ const createSucursal = async ({name, provincia} : SucursalDTO) =>{
++ }
++ 
++ 
++-const deleteSucursal = async ({name}: SucursalDTO) =>{
+++const deleteSucursal = async ({id}: SucursalDTO) =>{
++   await initRepo()
++-  const sucursalFound = await SucursalRepository.findOne({where:{name}}) as Sucursales
+++  const sucursalFound = await SucursalRepository.findOne({where:{id}}) as Sucursales
++   if (sucursalFound) return false;
++   await SucursalRepository.delete(sucursalFound)
++   return;
++@@ -48,15 +48,14 @@ const deleteSucursal = async ({name}: SucursalDTO) =>{
++ 
++ const viewAllSucursales = async () => {
++   await initRepo();
++-  const sucursalesFound = await SucursalRepository.find();
+++  const sucursalesFound = await SucursalRepository.find({ relations: ["provincia"] });
++   if(!sucursalesFound) return false;
++   return sucursalesFound;
++ }
++ 
++ const viewOneSucursales = async ({id} : SucursalDTO) =>{
++   await initRepo();
++-  const sucursalFound = await SucursalRepository.findOne({where:{id}})
++-  console.log(sucursalFound)
+++  const sucursalFound = await SucursalRepository.findOne({where:{id}, relations: ["provincia"]})
++   if(!sucursalFound) return false;
++   return sucursalFound;
++ }
++@@ -65,7 +64,7 @@ const updateSucursal = async ({id, name, provincia} : SucursalDTO) => {
++   await initRepo();
++   const sucursalFound = await SucursalRepository.findOne({where:{id}})
++   if(!sucursalFound) return false;
++-  const provinciaFound = await ProvinciaRepository.findOne({where:{nombre : provincia}}) as Provincia
+++  const provinciaFound = await ProvinciaRepository.findOne({where:{id : provincia!.id}}) as Provincia
++   if (!provinciaFound) return false
++   const newSucursal = await SucursalRepository.create({name, provincia : provinciaFound})
++   const updatedSucursal = Object.assign(sucursalFound, newSucursal)
++-- 
++2.35.1.windows.2
++
+diff --git a/src/controllers/sucursal.ts b/src/controllers/sucursal.ts
+index c5ee8f2..eefcffc 100644
+--- a/src/controllers/sucursal.ts
++++ b/src/controllers/sucursal.ts
+@@ -1,63 +1,65 @@
+-import {Response, Request} from 'express'
+-import { createSucursal, deleteSucursal, updateSucursal, viewAllSucursales, viewOneSucursales} from '../services/sucursalServices'
++import { Response, Request } from 'express'
++import { createSucursal, deleteSucursal, updateSucursal, viewAllSucursales, viewOneSucursales } from '../services/sucursalServices'
+ import { StatusCodes } from 'http-status-codes';
+ 
+ //TODO Pass every arrow function args Req to {body}
+-const newSucursal = async ({body}:Request, res:Response) =>{
+-    try{
+-    const {name , provincia} = body
+-    const newSucursal = await createSucursal({name, provincia})
+-    if(newSucursal) throw "Hubo un error en la creacion"
+-    res.send(newSucursal)
+-    }catch(e){
++const newSucursal = async ({ body }: Request, res: Response) => {
++    try {
++        const { name, provincia } = body
++        const newSucursal = await createSucursal({ name, provincia })
++        if (!newSucursal) throw "Hubo un error en la creacion"
++        res.send(newSucursal)
++    } catch (e) {
+         res.status(StatusCodes.CONFLICT).send(e)
+     }
+ }
+ 
+-const delSucursal = async ({params}:Request, res:Response) =>{
++const delSucursal = async ({ params }: Request, res: Response) => {
+     try {
+-        const id : number = parseInt(params.id)
+-        const deleteSucursalActual = await deleteSucursal({id})
+-        if(deleteSucursalActual) throw "No existe la sucursal";
+-        res.send(`La sucursal fue borrado`).status(StatusCodes.OK)
++        const id = parseInt(params.id)
++        const deleteSucursalActual = await deleteSucursal({ id })
++        if (deleteSucursalActual) throw "No existe la sucursal";
++        //res.send(`La sucursal fue borrado`).status(StatusCodes.OK)
++        res.status(StatusCodes.OK).json({
++            success: true,
++            message: 'La sucursal ha sido borrada correctamente.'
++        }).send;
+     } catch (error) {
+         res.status(StatusCodes.NOT_FOUND).send(error)
+     }
++}
+ 
+-} 
+-
+-const getAllSurcursales = async (req:Request, res:Response) => {
++const getAllSurcursales = async (req: Request, res: Response) => {
+     try {
+         const sucursalesFound = await viewAllSucursales();
+-        if(!sucursalesFound) throw "No hay usuarios en la base de datos"
++        if (!sucursalesFound) throw "No hay usuarios en la base de datos"
+         res.send(sucursalesFound).status(StatusCodes.OK)
+     } catch (error) {
+         res.status(StatusCodes.NOT_FOUND).send(error)
+     }
+ }
+ 
+-const getOneSucursal = async ({params}:Request, res:Response)=>{
++const getOneSucursal = async ({ params }: Request, res: Response) => {
+     try {
+         const id = parseInt(params.id)
+-        const sucursalFound = await viewOneSucursales({id})
+-        if(!sucursalFound) throw "No se encontro la sucursal"
++        const sucursalFound = await viewOneSucursales({ id })
++        if (!sucursalFound) throw "No se encontro la sucursal"
+         res.send(sucursalFound)
+     } catch (error) {
+         res.status(StatusCodes.NOT_FOUND).send(error)
+     }
+ }
+ 
+-const putSucursal = async ({body, params}:Request, res:Response) => {
++const putSucursal = async ({ body, params }: Request, res: Response) => {
+     try {
+         const id = parseInt(params.id)
+-        const {name, provincia} = body
+-        const updatedSucursal = await updateSucursal({id, name, provincia})
+-        if(updatedSucursal) throw "La sucursal actualizada no es valida"
++        const { name, provincia } = body
++        const updatedSucursal = await updateSucursal({ id, name, provincia })
++        if (updatedSucursal) throw "La sucursal actualizada no es valida"
+         res.send(updatedSucursal)
+     } catch (error) {
+         res.status(StatusCodes.BAD_REQUEST).send(error);
+     }
+ }
+ 
+-
+-export{newSucursal, delSucursal, getAllSurcursales, getOneSucursal, putSucursal}
+\ No newline at end of file
++export { newSucursal, delSucursal, getAllSurcursales, getOneSucursal, putSucursal }
+\ No newline at end of file
+diff --git a/src/routes/sucursal.ts b/src/routes/sucursal.ts
+index da83d65..e642feb 100644
+--- a/src/routes/sucursal.ts
++++ b/src/routes/sucursal.ts
+@@ -12,7 +12,7 @@ router.get('/:id', getOneSucursal)
+ router.get('', getAllSurcursales)
+ 
+ //Delete
+-router.delete('/:name', delSucursal)
++router.delete('/:id', delSucursal)
+ 
+ //Put-Patch
+ router.patch('', putSucursal)
+diff --git a/src/services/sucursalServices.ts b/src/services/sucursalServices.ts
+index 21317c9..3b15151 100644
+--- a/src/services/sucursalServices.ts
++++ b/src/services/sucursalServices.ts
+@@ -26,10 +26,12 @@ initRepo()
+ //TODO Pass every arrow function args to a sucursalDTO
+ const createSucursal = async ({name, provincia} : SucursalDTO) =>{
+     await initRepo()
+-    const sucursalFound = await SucursalRepository.findOne({where:{name}})
+-    if (sucursalFound) return false;
++    
++    //const sucursalFound = await SucursalRepository.findOne({where:{name}})
++    //if (sucursalFound) return false;
+     const provinciaFound = await ProvinciaRepository.findOne({where:{id : provincia?.id}}) as Provincia
+     if (!provinciaFound) return false
++    console.log(provinciaFound)
+     const newSucursal = await SucursalRepository.create({name, provincia : provinciaFound })
+     await SucursalRepository.save(newSucursal);
+ 
+@@ -40,7 +42,8 @@ const createSucursal = async ({name, provincia} : SucursalDTO) =>{
+ const deleteSucursal = async ({id}: SucursalDTO) =>{
+   await initRepo()
+   const sucursalFound = await SucursalRepository.findOne({where:{id}}) as Sucursales
+-  if (sucursalFound) return false;
++  console.log(sucursalFound)
++  if (!sucursalFound) return false;
+   await SucursalRepository.delete(sucursalFound)
+   return;
+ 
+-- 
+2.35.1.windows.2
+

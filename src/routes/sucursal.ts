@@ -15,7 +15,7 @@ router.get('', getAllSurcursales)
 router.delete('/:id', delSucursal)
 
 //Put-Patch
-router.patch('', putSucursal)
+router.put('/:id', putSucursal)
 
 //Post 
 router.post('',newSucursal)

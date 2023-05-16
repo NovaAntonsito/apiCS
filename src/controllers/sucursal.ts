@@ -55,8 +55,12 @@ const putSucursal = async ({ body, params }: Request, res: Response) => {
         const id = parseInt(params.id)
         const { name, provincia } = body
         const updatedSucursal = await updateSucursal({ id, name, provincia })
-        if (updatedSucursal) throw "La sucursal actualizada no es valida"
-        res.send(updatedSucursal)
+        console.log(updatedSucursal)
+        if (updatedSucursal==null) throw "La sucursal actualizada no es valida"
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: 'La sucursal ha sido actualizada correctamente.'
+        }).send;
     } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).send(error);
     }
