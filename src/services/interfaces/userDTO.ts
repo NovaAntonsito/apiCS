@@ -1,7 +1,7 @@
 
 interface Sucursal {
     id: number;
-    name: string;
+    nombre: string;
 }
 export interface userDTO {
     id? : number;

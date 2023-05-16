@@ -1,5 +1,9 @@
+interface Sucursales{
+    id : number,
+    nombre : string
+}
 export interface provinciaDTO{
     id? : number,
     nombre? : string,
-    sucursalesName? : string[]
+    sucursales? : Sucursales[];
 }

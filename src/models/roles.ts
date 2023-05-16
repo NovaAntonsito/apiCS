@@ -12,7 +12,7 @@ export class Role {
   rol: string;
 
   @ManyToOne(()=> User, (User) => User.roles)
-  users : User;
+  usuario : User;
 
   @OneToMany(()=>permisos,(permisos) => permisos.roles)
   @JoinTable()
