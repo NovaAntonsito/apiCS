@@ -12,7 +12,7 @@ router.get('/:id', getOneSucursal)
 router.get('', getAllSurcursales)
 
 //Delete
-router.delete('/:name', delSucursal)
+router.delete('/:id', delSucursal)
 
 //Put-Patch
 router.patch('', putSucursal)
