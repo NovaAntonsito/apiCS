@@ -9,7 +9,10 @@ const newSucursal = async ({body}:Request, res:Response) =>{
     if(newSucursal) throw "Hubo un error en la creacion"
     res.send(newSucursal)
     }catch(e){
-        res.status(StatusCodes.CONFLICT).send(e)
+        res.status(StatusCodes.CONFLICT).json({
+            success : false,
+            message: e
+        })
     }
 }
 
@@ -18,9 +21,15 @@ const delSucursal = async ({params}:Request, res:Response) =>{
         const id : number = parseInt(params.id)
         const deleteSucursalActual = await deleteSucursal({id})
         if(deleteSucursalActual) throw "No existe la sucursal";
-        res.send(`La sucursal fue borrado`).status(StatusCodes.OK)
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Ya se borro la sucursal"
+        })
     } catch (error) {
-        res.status(StatusCodes.NOT_FOUND).send(error)
+        res.status(StatusCodes.NOT_FOUND).json({
+            success: false,
+            message: error
+        })
     }
 
 } 
@@ -31,7 +40,10 @@ const getAllSurcursales = async (req:Request, res:Response) => {
         if(sucursalesFound) throw "No hay usuarios en la base de datos"
         res.send(sucursalesFound)
     } catch (error) {
-        res.status(StatusCodes.NOT_FOUND).send(error)
+        res.status(StatusCodes.NOT_FOUND).json({
+            success : false,
+            message: error
+        })
     }
 }
 
@@ -42,7 +54,10 @@ const getOneSucursal = async ({params}:Request, res:Response)=>{
         if(sucursalFound) throw "No se encontro la sucursal"
         res.send(sucursalFound)
     } catch (error) {
-        res.status(StatusCodes.NOT_FOUND).send(error)
+        res.status(StatusCodes.NOT_FOUND).json({
+            success : false,
+            message: error
+        })
     }
 }
 
@@ -54,9 +69,12 @@ const putSucursal = async ({body, params}:Request, res:Response) => {
         if(updatedSucursal) throw "La sucursal actualizada no es valida"
         res.send(updatedSucursal)
     } catch (error) {
-        res.status(StatusCodes.BAD_REQUEST).send(error);
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success : false,
+            message: error
+        })
     }
 }
 
 
-export{newSucursal, delSucursal, getAllSurcursales, getOneSucursal}
+export{newSucursal, delSucursal, getAllSurcursales, getOneSucursal, putSucursal}
