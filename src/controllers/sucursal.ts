@@ -10,7 +10,10 @@ const newSucursal = async ({ body }: Request, res: Response) => {
         if (!newSucursal) throw "Hubo un error en la creacion"
         res.send(newSucursal)
     } catch (e) {
-        res.status(StatusCodes.CONFLICT).send(e)
+        res.status(StatusCodes.CONFLICT).json({
+            success: false,
+            message: e
+        })
     }
 }
 
@@ -19,13 +22,15 @@ const delSucursal = async ({ params }: Request, res: Response) => {
         const id = parseInt(params.id)
         const deleteSucursalActual = await deleteSucursal({ id })
         if (deleteSucursalActual) throw "No existe la sucursal";
-        //res.send(`La sucursal fue borrado`).status(StatusCodes.OK)
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'La sucursal ha sido borrada correctamente.'
         }).send;
     } catch (error) {
-        res.status(StatusCodes.NOT_FOUND).send(error)
+        res.status(StatusCodes.NOT_FOUND).json({
+            success : false,
+            message : error
+        })
     }
 }
 
@@ -33,9 +38,12 @@ const getAllSurcursales = async (req: Request, res: Response) => {
     try {
         const sucursalesFound = await viewAllSucursales();
         if (!sucursalesFound) throw "No hay usuarios en la base de datos"
-        res.send(sucursalesFound).status(StatusCodes.OK)
+        res.status(StatusCodes.OK).send(sucursalesFound)
     } catch (error) {
-        res.status(StatusCodes.NOT_FOUND).send(error)
+        res.status(StatusCodes.NOT_FOUND).json({
+            success: true,
+            message: error
+        })
     }
 }
 
@@ -46,7 +54,10 @@ const getOneSucursal = async ({ params }: Request, res: Response) => {
         if (!sucursalFound) throw "No se encontro la sucursal"
         res.send(sucursalFound)
     } catch (error) {
-        res.status(StatusCodes.NOT_FOUND).send(error)
+        res.status(StatusCodes.NOT_FOUND).json({
+            success: false,
+            message: error
+        })
     }
 }
 
@@ -59,10 +70,14 @@ const putSucursal = async ({ body, params }: Request, res: Response) => {
         if (updatedSucursal==null) throw "La sucursal actualizada no es valida"
         res.status(StatusCodes.OK).json({
             success: true,
+            data: updatedSucursal,
             message: 'La sucursal ha sido actualizada correctamente.'
         }).send;
     } catch (error) {
-        res.status(StatusCodes.BAD_REQUEST).send(error);
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: true,
+            message: error
+        })
     }
 }
 

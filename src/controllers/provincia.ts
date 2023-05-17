@@ -10,7 +10,10 @@ const PostProvincia = async ({body}: Request, res:Response) =>{
     const provincias = await createProvincia(body)
     res.send(provincias)
     }catch(e){
-        res.status(StatusCodes.CONFLICT).send(e)
+        res.status(StatusCodes.CONFLICT).json({
+            success : false,
+            message : e
+        })
     }
 }
 
@@ -20,7 +23,10 @@ const GetAllProvincias = async ({body}:Request, res:Response)=>{
         if(!provinciasFound) throw "No se encontro las provincias" 
         res.send(provinciasFound)
     } catch (e) {
-        res.status(StatusCodes.NOT_FOUND).send(e)
+        res.status(StatusCodes.NOT_FOUND).json({
+            success: false,
+            message: e
+        })
     }
 }
 
@@ -28,26 +34,26 @@ const GetOneProvincia =async ({params}:Request, res:Response) => {
     try { 
         console.log("estoy en el getOneProvincia")
         const id:number = parseInt(params.id);
-            //TODO Fix this 
-        // const provinciaFound = await viewOneProvincia(body)
-        // if(!provinciaFound) throw "No existe la provincia"
-        // res.send(provinciaFound)
         const provinciaFound = await viewOneProvincia({id})
-        console.log(provinciaFound)
         if(!provinciaFound) throw "No existe la provincia"
         res.send(provinciaFound)
     } catch (e) {
-        res.status(StatusCodes.NOT_FOUND).send(e)
+        res.status(StatusCodes.NOT_FOUND).json({
+            success : false,
+            message : e
+        })
     }
     
 }
 
 const DeleteProvincia = async ({body}:Request, res:Response) => {
     try {
-    
         const provinciaFound = await deleteProvincia(body)
         if(provinciaFound) throw "No existe la provincia"
-        res.status(StatusCodes.OK).send(`${body.nombre} fue borrado de la base de datos`)
+        res.status(StatusCodes.OK).json({
+            success : true,
+            message : `${body.nombre} fue eliminado de la base de datos`
+        })
     } catch (error) {
         res.status(StatusCodes.NOT_FOUND).send(error)
     }
@@ -59,10 +65,17 @@ const PatchProvincia = async ({body, params}:Request, res:Response) => {
     const id = parseInt(params.id);
     const nombre = body.nombre;
     const updatedProvincia = await updateProvincia({nombre, id})
-    if(!updatedProvincia) throw "No se encontro el usuario"
-    res.status(StatusCodes.OK).send("Se actualizo el usuario")
+    if(!updatedProvincia) throw "No se encontro la provincia"
+    res.status(StatusCodes.OK).json({
+        success : true,
+        data : updatedProvincia,
+        message : "Actualizado"
+    })
     }catch(e){
-        res.status(StatusCodes.NOT_FOUND).send(e)
+        res.status(StatusCodes.NOT_FOUND).json({
+            success : true,
+            message : e
+        })
     }
 
 
