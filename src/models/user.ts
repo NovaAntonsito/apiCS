@@ -15,11 +15,11 @@ export class User{
     @Column({nullable: true})
     active : boolean;
 
-    @OneToMany(() => Role, (Role) => Role.users)
+    @OneToMany(() => Role, (Role) => Role.usuario)
     @JoinTable()
     roles : Role[]
     
-    @ManyToMany(()=>Sucursales,(sucursales)=> sucursales.users)
+    @ManyToMany(()=>Sucursales,(sucursales)=> sucursales.usuarios)
     @JoinTable()
     sucursales : Sucursales[]
 

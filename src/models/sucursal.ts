@@ -9,9 +9,9 @@ export class Sucursales{
     id : number
 
     @Column()
-    name : string
+    nombre : string
     @ManyToMany(()=>User,(user) => user.sucursales)
-    users : User[]
+    usuarios : User[]
     
     @ManyToOne(() => Provincia, (Provincia) => Provincia.sucursales)
     provincia : Provincia

@@ -24,15 +24,13 @@ const initRepo = async () => {
 initRepo()
 
 //TODO Pass every arrow function args to a sucursalDTO
-const createSucursal = async ({name, provincia} : SucursalDTO) =>{
+const createSucursal = async ({nombre, provincia} : SucursalDTO) =>{
     await initRepo()
-    
-    //const sucursalFound = await SucursalRepository.findOne({where:{name}})
-    //if (sucursalFound) return false;
-    const provinciaFound = await ProvinciaRepository.findOne({where:{id : provincia?.id}}) as Provincia
+    const sucursalFound = await SucursalRepository.findOne({where:{nombre}})
+    if (sucursalFound) return false;
+    const provinciaFound = await ProvinciaRepository.findOne({where:{id : provincia?.id, nombre : provincia?.nombre}}) as Provincia
     if (!provinciaFound) return false
-    console.log(provinciaFound)
-    const newSucursal = await SucursalRepository.create({name, provincia : provinciaFound })
+    const newSucursal = await SucursalRepository.create({nombre, provincia : provinciaFound })
     await SucursalRepository.save(newSucursal);
 
     return newSucursal
@@ -42,8 +40,7 @@ const createSucursal = async ({name, provincia} : SucursalDTO) =>{
 const deleteSucursal = async ({id}: SucursalDTO) =>{
   await initRepo()
   const sucursalFound = await SucursalRepository.findOne({where:{id}}) as Sucursales
-  console.log(sucursalFound)
-  if (!sucursalFound) return false;
+  if (sucursalFound) return false;
   await SucursalRepository.delete(sucursalFound)
   return;
 
@@ -51,32 +48,27 @@ const deleteSucursal = async ({id}: SucursalDTO) =>{
 
 const viewAllSucursales = async () => {
   await initRepo();
-  const sucursalesFound = await SucursalRepository.find({ relations: ["provincia"] });
-  if(!sucursalesFound) return false;
+  const sucursalesFound = await SucursalRepository.find();
+  if(sucursalesFound.length === 0) return false;
   return sucursalesFound;
 }
 
 const viewOneSucursales = async ({id} : SucursalDTO) =>{
   await initRepo();
-  const sucursalFound = await SucursalRepository.findOne({where:{id}, relations: ["provincia"]})
+  const sucursalFound = await SucursalRepository.findOne({where:{id}})
   if(!sucursalFound) return false;
   return sucursalFound;
 }
 
-const updateSucursal = async ({ id, name, provincia }: SucursalDTO) => {
+const updateSucursal = async ({id, nombre, provincia} : SucursalDTO) => {
   await initRepo();
-
-  const sucursal:SucursalDTO | null  = await SucursalRepository.findOne({ where: { id } });
-
-  if (sucursal) {
-    sucursal.name = name;
-    sucursal.provincia = provincia;
-
-    await SucursalRepository.save(sucursal);
-    return sucursal;
-  }
-
-  return null;
-};
+  const sucursalFound = await SucursalRepository.findOne({where:{id}})
+  if(!sucursalFound) return false;
+  const provinciaFound = await ProvinciaRepository.findOne({where:{id : provincia?.id, nombre : provincia?.nombre}}) as Provincia
+  if (!provinciaFound) return false
+  const newSucursal = await SucursalRepository.create({nombre, provincia : provinciaFound})
+  const updatedSucursal = Object.assign(sucursalFound, newSucursal)
+  return updatedSucursal
+}
 
 export {createSucursal, deleteSucursal, viewAllSucursales, viewOneSucursales, updateSucursal}
