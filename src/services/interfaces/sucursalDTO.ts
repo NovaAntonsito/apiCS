@@ -1,10 +1,7 @@
-interface Provincia {
-    id : number,
-    nombre : string
-}
+import { provinciaDTO } from "./provinciaDTO";
 export interface SucursalDTO {
     id? : number;
     nombre? : string;
     usuario? : string[];
-    provincia? : Provincia;
+    provincia? : provinciaDTO;
 }

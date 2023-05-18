@@ -26,10 +26,9 @@ initRepo()
 //TODO Pass every arrow function args to a sucursalDTO
 const createSucursal = async ({nombre, provincia} : SucursalDTO) =>{
     await initRepo()
-    const sucursalFound = await SucursalRepository.findOne({where:{nombre}})
-    if (sucursalFound) return false;
-    const provinciaFound = await ProvinciaRepository.findOne({where:{id : provincia?.id, nombre : provincia?.nombre}}) as Provincia
+    const provinciaFound = await ProvinciaRepository.findOne({where:{id : provincia?.id}}) as Provincia
     if (!provinciaFound) return false
+    console.log(provinciaFound)
     const newSucursal = await SucursalRepository.create({nombre, provincia : provinciaFound })
     await SucursalRepository.save(newSucursal);
 
