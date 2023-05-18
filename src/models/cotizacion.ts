@@ -1,11 +1,12 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Moneda} from "./moneda";
 
 @Entity({name : "cotizaciones"})
 export class Cotizaciones{
     @PrimaryGeneratedColumn()
     id: number
-    @OneToMany(type => Moneda, moneda => moneda.cotizaciones)
+    @ManyToMany(() => Moneda, (moneda)=> moneda.cotizaciones)
+    @JoinTable({name : "cotizacion_moneda"})
     monedas : Moneda[]
     @Column({name : "valor/precio"})
     valor : number
@@ -13,5 +14,6 @@ export class Cotizaciones{
     fechaCotizacion : Date
     @Column({name: "fecha_Vigencia"})
     fechaVigencia : Date
-
+    @Column({name : "deleted", default : false})
+    deleted : boolean
 }

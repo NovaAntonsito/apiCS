@@ -7,8 +7,9 @@ import { StatusCodes } from 'http-status-codes';
 //TODO Pass every arrow function args Req to {body}
 const PostProvincia = async ({body}: Request, res:Response) =>{
     try{
-    const provincias = await createProvincia(body)
-    res.send(provincias)
+        const provincias = await createProvincia(body);
+        if(!provincias) throw "Ya existe una provincia"
+        res.send(provincias);
     }catch(e){
         res.status(StatusCodes.CONFLICT).json({
             success : false,

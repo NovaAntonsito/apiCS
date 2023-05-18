@@ -34,8 +34,8 @@ const registerNewUser = async ({username,password,email,sucursales}: userDTO) =>
     sucursales.map(async sucursal =>{
       const sucursalFound = await SucursalRepository.findOne({where: {
               id : sucursal.id,
-              nombre : sucursal.nombre}
-      })
+              nombre : sucursal.nombre
+      }})
       if (sucursalFound) {
         sucursalList.push(sucursalFound);
       }

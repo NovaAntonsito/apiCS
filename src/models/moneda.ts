@@ -1,4 +1,4 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Cotizaciones} from "./cotizacion";
 
 @Entity({name:"moneda"})
@@ -9,6 +9,6 @@ export class Moneda{
     codigo : string
     @Column({name: "nombre"})
     nombre : string
-    @ManyToOne(type => Cotizaciones, coti => coti.monedas)
-    cotizaciones : Cotizaciones
+    @ManyToMany(() => Cotizaciones, coti => coti.monedas)
+    cotizaciones : Cotizaciones[]
 }
