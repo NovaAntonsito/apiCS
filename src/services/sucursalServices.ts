@@ -51,7 +51,7 @@ const viewAllSucursales = async () => {
   return sucursalesFound;
 }
 
-const viewOneSucursales = async ({id} : SucursalDTO) =>{
+const viewOneSucursales = async (id : number) =>{
   await initRepo();
   const sucursalFound = await SucursalRepository.findOne({where:{id}})
   if(!sucursalFound) return false;
