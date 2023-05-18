@@ -1,5 +1,10 @@
 import { Request, Response } from 'express'
-import {createCotizacion, viewAllCotizaciones, viewOneCotizaciones} from "../services/cotizacionService";
+import {
+    createCotizacion,
+    softDeleteCotizacion, updateCotizacion,
+    viewAllCotizaciones,
+    viewOneCotizaciones
+} from "../services/cotizacionService";
 import {StatusCodes} from "http-status-codes";
 
 const postCotizacion = async ({body}: Request, res: Response)=>{
@@ -43,5 +48,31 @@ const getOneCotizaciones = async ({params}:Request, res:Response) =>{
     }
 
 }
+const DeleteCotizacion = async ({params}:Request, res:Response) =>{
+    try {
+        const id = parseInt(params.id)
+        const deletedCotizacion = await softDeleteCotizacion(id);
+        if(!deletedCotizacion)throw "No existe esa cotizacion"
+    }catch (e) {
+        res.status(StatusCodes.NOT_FOUND).json({
+            success: false,
+            message: e
+        })
+    }
+}
 
-export {getAllCotizaciones,getOneCotizaciones, postCotizacion}
+const patchCotizacion = async ({body,params}:Request, res:Response)=>{
+    try {
+        const id = parseInt(params.id)
+        const updatedCotizacion = await updateCotizacion(body, id)
+        if (!updatedCotizacion) throw "No existe la cotizacion"
+        res.send(updatedCotizacion)
+    }catch (e) {
+        res.status(StatusCodes.NOT_FOUND).json({
+            success: false,
+            message: e
+        })
+    }
+}
+
+export {getAllCotizaciones,getOneCotizaciones, postCotizacion,DeleteCotizacion, patchCotizacion}

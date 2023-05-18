@@ -62,5 +62,37 @@ const createCotizacion = async ({monedas, valor,fechaCotizacion,fechaVigencia}: 
     return newCotizacion
 }
 
+const softDeleteCotizacion = async (id : number) =>{
+    await initRepo();
+    const cotiFound = await cotizacionRepository.findOne({where:{id}})
+    if(cotiFound){
+        cotiFound.deleted = true;
+        await cotizacionRepository.save(cotiFound);
+        return true
+    }else{
+        return false
+    }
+}
 
-export {createCotizacion,viewAllCotizaciones,viewOneCotizaciones}
+const updateCotizacion = async ({monedas, valor,fechaCotizacion,fechaVigencia}:CotizacionDTO, id : number) =>{
+    await initRepo();
+    const cotiFound = await cotizacionRepository.findOne({where:{id}})
+    if(cotiFound){
+        let monedasList: Moneda[] = []
+        await Promise.all(monedas.map(async ({codigo,id} : MonedaDTO) =>{
+            const monedaFound = await monedaRepository.findOne({where:{codigo, id}}) as Moneda;
+            if(monedaFound){
+                monedasList.push(monedaFound)
+            }
+        }));
+        const newCoti = cotizacionRepository.create({valor,fechaCotizacion,fechaVigencia,monedas : monedasList})
+        Object.assign(cotiFound, newCoti)
+        await cotizacionRepository.save(cotiFound)
+        return cotiFound
+    }else{
+        return false
+    }
+}
+
+
+export {createCotizacion,viewAllCotizaciones,viewOneCotizaciones,softDeleteCotizacion, updateCotizacion}

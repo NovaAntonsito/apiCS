@@ -1,5 +1,11 @@
 import {Router} from "express";
-import {getAllCotizaciones, getOneCotizaciones, postCotizacion} from "../controllers/cotizaciones";
+import {
+    DeleteCotizacion,
+    getAllCotizaciones,
+    getOneCotizaciones,
+    patchCotizacion,
+    postCotizacion
+} from "../controllers/cotizaciones";
 
 
 const router = Router()
@@ -12,10 +18,10 @@ router.get('', getAllCotizaciones)
 router.get('/:id', getOneCotizaciones)
 
 //Delete
-router.delete('/:id', )
+router.delete('/:id', DeleteCotizacion)
 
 //Put-Patch
-router.patch('/:id', )
+router.patch('/:id', patchCotizacion)
 
 //Post
 router.post('', postCotizacion)
