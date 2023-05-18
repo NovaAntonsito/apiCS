@@ -31,7 +31,6 @@ const createSucursal = async ({nombre, provincia} : SucursalDTO) =>{
     console.log(provinciaFound)
     const newSucursal = await SucursalRepository.create({nombre, provincia : provinciaFound })
     await SucursalRepository.save(newSucursal);
-
     return newSucursal
 }
 
