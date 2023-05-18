@@ -13,6 +13,7 @@ const DBConfig = new DataSource({
     ],
     extra: {
         connectionLimit: 50,
+        
     }
 })
 

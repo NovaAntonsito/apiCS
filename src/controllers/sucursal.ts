@@ -6,7 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 const newSucursal = async ({body}:Request, res:Response) =>{
     try{
     const newSucursal = await createSucursal(body)
-    if(newSucursal) throw "Hubo un error en la creacion"
+    if(!newSucursal) throw "Hubo un error en la creacion"
     res.send(newSucursal)
     }catch(e){
         res.status(StatusCodes.CONFLICT).json({
