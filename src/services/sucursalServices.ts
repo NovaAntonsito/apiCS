@@ -43,13 +43,21 @@ const deleteSucursal = async (id : number) =>{
   return true
 }
 
-const viewAllSucursales = async () => {
-  await initRepo();
-  const sucursalesFound = await SucursalRepository.find({ relations: ["provincia"] });
-  if(sucursalesFound.length === 0) return false;
-  return sucursalesFound;
+const viewAllSucursales = async (pageNumber: number, pageSize: number) => {
+    await initRepo();
+    const sucursalesFound = await SucursalRepository.find({
+        relations: ["provincia"],
+        skip: (pageNumber - 1) * pageSize,
+        take: pageSize
+    });
+    if (sucursalesFound.length === 0) return false;
+    return {
+        data: sucursalesFound,
+        perPage: pageSize,
+        next: pageNumber + 1,
+        previous : pageNumber<=0 ? 0 : pageNumber-1
+    };
 }
-
 const viewOneSucursales = async (id : number) =>{
   await initRepo();
   const sucursalFound = await SucursalRepository.findOne({where:{id}, relations: ["provincia"]})

@@ -27,11 +27,20 @@ const initRepo = async () => {
 initRepo();
 
 
-const viewAllCotizaciones = async () =>{
+const viewAllCotizaciones = async (pageNumber: number, pageSize: number) =>{
     await initRepo();
-    const allCotizaciones = await cotizacionRepository.find({where:{deleted: false},relations:["monedas"]})
+    const allCotizaciones = await cotizacionRepository.find({
+        where:{deleted: false},
+        relations:["monedas"],
+        skip: (pageNumber - 1) * pageSize,
+        take: pageSize})
     if(allCotizaciones.length === 0) return false
-    return allCotizaciones;
+    return {
+        data: allCotizaciones,
+        perPage: pageSize,
+        next: pageNumber + 1,
+        previous : pageNumber<=0 ? 0 : pageNumber-1
+    };
 }
 
 const viewOneCotizaciones = async (id : number) =>{

@@ -18,9 +18,11 @@ const PostProvincia = async ({body}: Request, res:Response) =>{
     }
 }
 
-const GetAllProvincias = async ({body}:Request, res:Response)=>{
+const GetAllProvincias = async ({query}:Request, res:Response)=>{
     try {
-        const provinciasFound = await viewAllProvincias()
+        const page = parseInt(query.page as string) || 1;
+        const pageSize = parseInt(query.pageSize as string) || 10;
+        const provinciasFound = await viewAllProvincias(page,pageSize)
         if(!provinciasFound) throw "No se encontro las provincias" 
         res.send(provinciasFound)
     } catch (e) {

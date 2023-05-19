@@ -25,11 +25,18 @@ const createMoneda = async ({codigo,nombre,locale}:MonedaDTO) =>{
     return new ResDTO(monedaDB.id,true,"La moneda fue creada")
 }
 
-const viewAllMonedas = async () =>{
+const viewAllMonedas = async (pageNumber: number, pageSize: number) =>{
     await initRepo()
-    const monedasFound = await monedaRepository.find();
+    const monedasFound = await monedaRepository.find({
+        skip: (pageNumber - 1) * pageSize,
+        take: pageSize});
     if (monedasFound.length === 0) return false;
-    return monedasFound
+    return {
+        data: monedasFound,
+        perPage: pageSize,
+        next: pageNumber + 1,
+        previous : pageNumber<=0 ? 0 : pageNumber-1
+    };
 }
 
 const viewOneMoneda = async (id : number)=>{

@@ -29,9 +29,11 @@ const getOneMoneda = async ({params}:Request, res:Response)=>{
     }
 }
 
-const getAllMonedas = async (req:Request, res:Response)=>{
+const getAllMonedas = async ({query}:Request, res:Response)=>{
     try {
-        const allMonedas = await viewAllMonedas();
+        const page = parseInt(query.page as string) || 1;
+        const pageSize = parseInt(query.pageSize as string) || 10;
+        const allMonedas = await viewAllMonedas(page,pageSize);
         if(!allMonedas) throw "No existen monedas en la base de datos"
         res.send(allMonedas)
     }catch (e) {

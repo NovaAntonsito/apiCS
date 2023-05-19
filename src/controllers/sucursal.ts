@@ -32,20 +32,23 @@ const delSucursal = async ({params}:Request, res:Response) =>{
         })
     }
 
-} 
+}
 
-const getAllSurcursales = async (req:Request, res:Response) => {
+const getAllSurcursales = async ({query}: Request, res: Response) => {
     try {
-        const sucursalesFound = await viewAllSucursales();
-        if(!sucursalesFound) throw "No hay sucursales en la base de datos"
-        res.send(sucursalesFound)
+        const page = parseInt(query.page as string) || 1;
+        const pageSize = parseInt(query.pageSize as string) || 10;
+        const sucursalesFound = await viewAllSucursales(page, pageSize);
+        if (!sucursalesFound) throw "No hay sucursales en la base de datos";
+        res.send(sucursalesFound);
     } catch (error) {
         res.status(StatusCodes.NOT_FOUND).json({
-            success : false,
+            success: false,
             message: error
-        })
+        });
     }
-}
+};
+
 
 const getOneSucursal = async ({params}:Request, res:Response)=>{
     try {

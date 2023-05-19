@@ -34,11 +34,19 @@ const createProvincia = async ({nombre} : provinciaDTO) => {
   return new ResDTO(newProvinciaDB.id, true, "La provincia fue creada");
 };
 
-const viewAllProvincias = async () => {
+const viewAllProvincias = async (pageNumber: number, pageSize: number) => {
   await initRepo();
-  const provinciaFound = await ProvinciaRepository.find({relations: ["sucursales"]});
+  const provinciaFound = await ProvinciaRepository.find({
+    relations: ["sucursales"],
+    skip: (pageNumber - 1) * pageSize,
+    take: pageSize});
   if (provinciaFound.length === 0) return false;
-  return provinciaFound;
+  return {
+    data: provinciaFound,
+    perPage: pageSize,
+    next: pageNumber + 1,
+    previous : pageNumber<=0 ? 0 : pageNumber-1
+  };
 };
 
 const viewOneProvincia = async ({id}: provinciaDTO) => {

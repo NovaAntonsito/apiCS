@@ -20,9 +20,11 @@ const postCotizacion = async ({body}: Request, res: Response)=>{
     }
 
 }
-const getAllCotizaciones = async (req: Request, res:Response) =>{
+const getAllCotizaciones = async ({query}: Request, res:Response) =>{
     try {
-        const allCotizaciones = await viewAllCotizaciones()
+        const page = parseInt(query.page as string) || 1;
+        const pageSize = parseInt(query.pageSize as string) || 10;
+        const allCotizaciones = await viewAllCotizaciones(page,pageSize)
         if(!allCotizaciones) throw "No hay cotizaciones en la base de datos"
         res.send(allCotizaciones)
     }catch (e){

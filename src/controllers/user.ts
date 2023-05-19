@@ -3,9 +3,11 @@ import { StatusCodes } from "http-status-codes";
 import { deleteUser, viewAllUsers, viewOneUser } from '../services/userServices';
 
 //TODO Pass every arrow function args Req to {body}
-export const getAllUser = async (req: Request, res: Response) => {
-    const allUsers : [] = await viewAllUsers()
-    if(allUsers.length === 0){
+export const getAllUser = async ({query}: Request, res: Response) => {
+    const page = parseInt(query.page as string) || 1;
+    const pageSize = parseInt(query.pageSize as string) || 10;
+    const allUsers = await viewAllUsers(page,pageSize)
+    if(!allUsers){
       res.status(StatusCodes.NOT_FOUND).json({
           success : false,
           message : "No hay usuarios en la base de datos"

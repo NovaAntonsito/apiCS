@@ -16,17 +16,23 @@ const initRepo = async () => {
 };
 
 initRepo();
-//TODO Pass every arrow function args to a userDTO
-export const viewAllUsers = async () => {
+export const viewAllUsers = async (pageNumber: number, pageSize: number) => {
   await initRepo()
-  const allUsers = await userRepository.createQueryBuilder("user")
-    .leftJoinAndSelect("user.sucursales", "sucursales")
-    .getMany();
+  const allUsers = await userRepository.find({
+    relations:["sucursales"],
+    skip: (pageNumber - 1) * pageSize,
+    take: pageSize})
+  if (!allUsers) return false;
   const allUsersMod: any = allUsers.map((User) => {
-    const { password, ...NoPassword } = User;
-    return NoPassword;
+    const { password ,active, ...user  } = User;
+    return user;
   });
-  return allUsersMod;
+  return {
+    data: allUsersMod,
+    perPage: pageSize,
+    next: pageNumber + 1,
+    previous : pageNumber<=0 ? 0 : pageNumber-1
+  };
 };
 
 export const viewOneUser = async (id: number) => {
@@ -39,9 +45,9 @@ export const viewOneUser = async (id: number) => {
   if (!userFound) {
     return;
   }
-  const { password, ...noPass } = userFound;
+  const { password , active, ...user } = userFound;
 
-  return noPass;
+  return user;
 };
 
 export const deleteUser = async (id: number) => {
