@@ -50,7 +50,15 @@ const updateMoneda = async ({codigo,nombre}:MonedaDTO, id : number) =>{
     return true
 }
 
+const deleteMoneda = async (id : number) =>{
+    await initRepo()
+    const monedaFound = await monedaRepository.findOne({where:{id}})
+    if (!monedaFound) return false;
+    await monedaRepository.delete(id)
+    return true
+  }
 
 
 
-export {createMoneda,viewOneMoneda,viewAllMonedas,updateMoneda}
+
+export {createMoneda,viewOneMoneda,viewAllMonedas,updateMoneda, deleteMoneda}

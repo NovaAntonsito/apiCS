@@ -1,5 +1,5 @@
 import {Request, Response} from 'express'
-import {createMoneda, updateMoneda, viewAllMonedas, viewOneMoneda} from "../services/monedaService";
+import {createMoneda, updateMoneda, viewAllMonedas, viewOneMoneda, deleteMoneda} from "../services/monedaService";
 import {StatusCodes} from "http-status-codes";
 
 const postMoneda = async ({body}: Request, res:Response ) =>{
@@ -58,4 +58,22 @@ const putMoneda = async ({body,params}:Request,res:Response) =>{
     }
 }
 
-export {getOneMoneda,postMoneda,getAllMonedas,putMoneda}
+const delMoneda = async ({params}:Request, res:Response) =>{
+    try {
+        const id = parseInt(params.id)
+        const deleteMonedaActual = await deleteMoneda(id)
+        if(!deleteMonedaActual) throw "No existe la moneda";
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: `La moneda fue borrada`
+        })
+    } catch (error) {
+        res.status(StatusCodes.NOT_FOUND).json({
+            success: false,
+            message: error
+        })
+    }
+
+} 
+
+export {getOneMoneda,postMoneda,getAllMonedas,putMoneda, delMoneda}
