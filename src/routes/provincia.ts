@@ -20,7 +20,7 @@ router.get('/:id', GetOneProvincia)
 router.delete('/:id', DeleteProvincia)
 
 //Put-Patch
-router.patch('/:id', PatchProvincia)
+router.put('/:id', PatchProvincia)
 
 //Post 
 router.post('',PostProvincia)
