@@ -36,7 +36,7 @@ const createProvincia = async ({nombre} : provinciaDTO) => {
 const viewAllProvincias = async () => {
   await initRepo();
   const provinciaFound = await ProvinciaRepository.find({relations: ["sucursales"]});
-  if (!provinciaFound) return false;
+  if (provinciaFound.length === 0) return false;
   return provinciaFound;
 };
 
@@ -51,11 +51,12 @@ const deleteProvincia = async (id : number) => {
   await initRepo();
   const provinciaFound = await ProvinciaRepository.findOne({
     where: { id },
+    relations:["sucursales"]
   });
-  console.log(provinciaFound)
   if (!provinciaFound) return false;
+  if(provinciaFound.sucursales) return "No se puede borrar una provincia con hijas"
   await ProvinciaRepository.delete(id);
-  return provinciaFound.nombre;
+  return true
 };
 
 const updateProvincia = async ({nombre, id} : provinciaDTO) => {

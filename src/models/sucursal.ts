@@ -10,9 +10,9 @@ export class Sucursales{
 
     @Column()
     nombre : string
-    @ManyToMany(()=>User,(user) => user.sucursales, {onDelete:"CASCADE"})
+    @ManyToMany(()=>User,(user) => user.sucursales)
     usuarios : User[]
     
-    @ManyToOne(() => Provincia, (Provincia) => Provincia.sucursales, {onDelete:"SET NULL"})
+    @ManyToOne(() => Provincia, (Provincia) => Provincia.sucursales)
     provincia : Provincia | null;
 }

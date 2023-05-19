@@ -9,6 +9,6 @@ export class Provincia {
     @Column()
     nombre : string
 
-    @OneToMany(()=>Sucursales,(sucursales) => sucursales.provincia, { onDelete:"CASCADE",})
+    @OneToMany(()=>Sucursales,(sucursales) => sucursales.provincia)
     sucursales : Sucursales[] | null
 }

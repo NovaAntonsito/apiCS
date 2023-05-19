@@ -49,16 +49,31 @@ const GetOneProvincia = async ({params}:Request, res:Response) => {
 const DeleteProvincia = async ({params}:Request, res:Response) => {
     try {
         const id = parseInt(params.id)
-        const provinciaFound = await deleteProvincia(id)
-        if(provinciaFound) throw "No existe la provincia"
+        const result = await deleteProvincia(id)
+        //Si tiene hijas muestro este error
+        if (typeof result === 'string') {
+            res.status(StatusCodes.BAD_REQUEST).json({
+                success : false,
+                message : result
+            })
+            return;
+        }
+        //Si no encuentro ninguna provincia con esa id muestro este error
+        if (result === false) {
+            console.log(result, " Controller")
+            res.status(StatusCodes.NOT_FOUND).json({
+                success : false,
+                message : "No se encontro la provincia"
+            })
+            return;
+        }
         res.status(StatusCodes.OK).json({
             success : true,
-            message : `${provinciaFound} fue eliminado de la base de datos`
+            message : `La sucursal fue eliminada de la base de datos`
         })
     } catch (error) {
-        res.status(StatusCodes.NOT_FOUND).send(error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error)
     }
-   
 }
 //TODO Fix this 
 const PatchProvincia = async ({body, params}:Request, res:Response) => {
