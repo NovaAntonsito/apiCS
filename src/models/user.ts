@@ -20,7 +20,7 @@ export class User{
     roles : Role[]
     
     @ManyToMany(()=>Sucursales,(sucursales)=> sucursales.usuarios)
-    @JoinTable()
+    @JoinTable({name:"usuario_Sucursales"})
     sucursales : Sucursales[]
 
 }

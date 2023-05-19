@@ -18,12 +18,12 @@ const newSucursal = async ({body}:Request, res:Response) =>{
 
 const delSucursal = async ({params}:Request, res:Response) =>{
     try {
-        const id : number = parseInt(params.id)
-        const deleteSucursalActual = await deleteSucursal({id})
-        if(deleteSucursalActual) throw "No existe la sucursal";
+        const id = parseInt(params.id)
+        const deleteSucursalActual = await deleteSucursal(id)
+        if(!deleteSucursalActual) throw "No existe la sucursal";
         res.status(StatusCodes.OK).json({
             success: true,
-            message: "Ya se borro la sucursal"
+            message: `La sucursal "${deleteSucursalActual}" fue borrada`
         })
     } catch (error) {
         res.status(StatusCodes.NOT_FOUND).json({
@@ -37,7 +37,7 @@ const delSucursal = async ({params}:Request, res:Response) =>{
 const getAllSurcursales = async (req:Request, res:Response) => {
     try {
         const sucursalesFound = await viewAllSucursales();
-        if(!sucursalesFound) throw "No hay usuarios en la base de datos"
+        if(!sucursalesFound) throw "No hay sucursales en la base de datos"
         res.send(sucursalesFound)
     } catch (error) {
         res.status(StatusCodes.NOT_FOUND).json({
@@ -66,7 +66,7 @@ const putSucursal = async ({body, params}:Request, res:Response) => {
         const id = parseInt(params.id)
         const {nombre, provincia} = body
         const updatedSucursal = await updateSucursal({id, nombre, provincia})
-        if(updatedSucursal) throw "La sucursal actualizada no es valida"
+        if(!updatedSucursal) throw "La sucursal actualizada no es valida"
         res.send(updatedSucursal)
     } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).json({

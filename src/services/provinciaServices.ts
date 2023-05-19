@@ -35,33 +35,32 @@ const createProvincia = async ({nombre} : provinciaDTO) => {
 
 const viewAllProvincias = async () => {
   await initRepo();
-  const provinciaFound = await ProvinciaRepository.find();
+  const provinciaFound = await ProvinciaRepository.find({relations: ["sucursales"]});
   if (!provinciaFound) return false;
   return provinciaFound;
 };
 
 const viewOneProvincia = async ({id}: provinciaDTO) => {
   await initRepo();
-  console.log(id);
-  
-  const provinciaFound = await ProvinciaRepository.findOne({ where: { id} });
+  const provinciaFound = await ProvinciaRepository.findOne({ where: { id }, relations: ["sucursales"] });
   if (!provinciaFound) return false;
   return provinciaFound;
 };
 
-const deleteProvincia = async ({id} :provinciaDTO) => {
+const deleteProvincia = async (id : number) => {
   await initRepo();
   const provinciaFound = await ProvinciaRepository.findOne({
     where: { id },
   });
+  console.log(provinciaFound)
   if (!provinciaFound) return false;
-  const deletedProvincia = await ProvinciaRepository.delete(provinciaFound);
-  return true;
+  await ProvinciaRepository.delete(id);
+  return provinciaFound.nombre;
 };
 
 const updateProvincia = async ({nombre, id} : provinciaDTO) => {
   await initRepo();
-  const provinciaFound = await ProvinciaRepository.findOne({ where: { id  } });
+  const provinciaFound = await ProvinciaRepository.findOne({ where: { id  }});
   if (!provinciaFound) return false;
   const provinciaToUpdate = await ProvinciaRepository.create({ nombre  });
   const updatedProvincia = Object.assign(provinciaFound, provinciaToUpdate);

@@ -39,9 +39,9 @@ export const viewOneUser = async (id: number) => {
   if (!userFound) {
     return;
   }
-  const { password, ...noPassword } = userFound;
+  const { password, ...noPass } = userFound;
 
-  return userFound;
+  return noPass;
 };
 
 export const deleteUser = async (id: number) => {

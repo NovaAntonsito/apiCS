@@ -31,9 +31,8 @@ const GetAllProvincias = async ({body}:Request, res:Response)=>{
     }
 }
 
-const GetOneProvincia =async ({params}:Request, res:Response) => {
-    try { 
-        console.log("estoy en el getOneProvincia")
+const GetOneProvincia = async ({params}:Request, res:Response) => {
+    try {
         const id:number = parseInt(params.id);
         const provinciaFound = await viewOneProvincia({id})
         if(!provinciaFound) throw "No existe la provincia"
@@ -47,13 +46,14 @@ const GetOneProvincia =async ({params}:Request, res:Response) => {
     
 }
 
-const DeleteProvincia = async ({body}:Request, res:Response) => {
+const DeleteProvincia = async ({params}:Request, res:Response) => {
     try {
-        const provinciaFound = await deleteProvincia(body)
+        const id = parseInt(params.id)
+        const provinciaFound = await deleteProvincia(id)
         if(provinciaFound) throw "No existe la provincia"
         res.status(StatusCodes.OK).json({
             success : true,
-            message : `${body.nombre} fue eliminado de la base de datos`
+            message : `${provinciaFound} fue eliminado de la base de datos`
         })
     } catch (error) {
         res.status(StatusCodes.NOT_FOUND).send(error)
