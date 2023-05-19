@@ -21,7 +21,7 @@ router.get('/:id', getOneCotizaciones)
 router.delete('/:id', DeleteCotizacion)
 
 //Put-Patch
-router.patch('/:id', patchCotizacion)
+router.put('/:id', patchCotizacion)
 
 //Post
 router.post('', postCotizacion)

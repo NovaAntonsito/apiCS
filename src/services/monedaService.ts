@@ -2,7 +2,6 @@ import {MonedaDTO} from "./interfaces/monedaDTO";
 import {Repository} from "typeorm";
 import {Moneda} from "../models/moneda";
 import {getDataSource} from "../config/DBConfig";
-import {Cotizaciones} from "../models/cotizacion";
 import {ResDTO} from "./interfaces/RespuestaDTO";
 
 let monedaRepository : Repository<Moneda>;
@@ -17,11 +16,11 @@ const initRepo = async () => {
     }
 };
 initRepo()
-const createMoneda = async ({codigo,nombre}:MonedaDTO) =>{
+const createMoneda = async ({codigo,nombre,locale}:MonedaDTO) =>{
     await initRepo();
     const monedaFound = await monedaRepository.find({where:{codigo,nombre}})
     if(!monedaFound) return false;
-    const newMoneda = monedaRepository.create({codigo,nombre})
+    const newMoneda = monedaRepository.create({codigo,nombre,locale})
     const monedaDB = await monedaRepository.save(newMoneda)
     return new ResDTO(monedaDB.id,true,"La moneda fue creada")
 }
@@ -40,11 +39,11 @@ const viewOneMoneda = async (id : number)=>{
     return monedaFound;
 }
 
-const updateMoneda = async ({codigo,nombre}:MonedaDTO, id : number) =>{
+const updateMoneda = async ({codigo,nombre,locale}:MonedaDTO, id : number) =>{
     await initRepo()
     const monedaFound = await monedaRepository.findOne({where:{id}})
     if (!monedaFound) return false;
-    const newMoneda = monedaRepository.create({codigo,nombre})
+    const newMoneda = monedaRepository.create({codigo,nombre,locale})
     Object.assign(monedaFound, newMoneda)
     await monedaRepository.save(monedaFound)
     return true

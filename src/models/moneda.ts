@@ -11,4 +11,6 @@ export class Moneda{
     nombre : string
     @ManyToMany(() => Cotizaciones, coti => coti.monedas)
     cotizaciones : Cotizaciones[]
+    @Column({name : "locale"})
+    locale : string;
 }
