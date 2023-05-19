@@ -54,7 +54,10 @@ const deleteProvincia = async (id : number) => {
     relations:["sucursales"]
   });
   if (!provinciaFound) return false;
-  if(provinciaFound.sucursales) return "No se puede borrar una provincia con hijas"
+
+  if(provinciaFound.sucursales?.length !== 0){
+    return "No se puede borrar una provincia con hijas"
+  }
   await ProvinciaRepository.delete(id);
   return true
 };
