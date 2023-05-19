@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { Provincia } from '../models/provincia';
 import { Sucursales } from '../models/sucursal';
 import { SucursalDTO } from './interfaces/sucursalDTO';
+import {ResDTO} from "./interfaces/RespuestaDTO";
 
 
 
@@ -29,8 +30,8 @@ const createSucursal = async ({nombre, provincia} : SucursalDTO) =>{
     const provinciaFound = await ProvinciaRepository.findOne({where:{id : provincia?.id, nombre : provincia?.nombre}})
     if (!provinciaFound) return false
     const newSucursal = await SucursalRepository.create({nombre, provincia : provinciaFound })
-    await SucursalRepository.save(newSucursal);
-    return newSucursal
+    const newSucursalDB =  await SucursalRepository.save(newSucursal);
+    return new ResDTO(newSucursalDB.id,true,"La sucursal fue creada")
 }
 
 
@@ -39,7 +40,7 @@ const deleteSucursal = async (id : number) =>{
   const sucursalFound = await SucursalRepository.findOne({where:{id}})
   if (!sucursalFound) return false;
   await SucursalRepository.delete(id)
-  return sucursalFound.nombre
+  return true
 }
 
 const viewAllSucursales = async () => {
@@ -69,7 +70,7 @@ const updateSucursal = async ({id, nombre, provincia} : SucursalDTO) => {
     }
   await SucursalRepository.save(updatedSucursal)
   
-  return updatedSucursal
+  return new ResDTO(updatedSucursal.id,true,"La sucursal fue actualizada")
 }
 
 export {createSucursal, deleteSucursal, viewAllSucursales, viewOneSucursales, updateSucursal}

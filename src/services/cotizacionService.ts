@@ -6,6 +6,7 @@ import {Sucursales} from "../models/sucursal";
 import {CotizacionDTO} from "./interfaces/cotizacionDTO";
 import {Moneda} from "../models/moneda";
 import {MonedaDTO} from "./interfaces/monedaDTO";
+import {ResDTO} from "./interfaces/RespuestaDTO";
 
 
 let cotizacionRepository : Repository<Cotizaciones>;
@@ -58,8 +59,8 @@ const createCotizacion = async ({monedas, valor,fechaCotizacion,fechaVigencia}: 
         fechaVigencia,
         monedas : monedasList})
 
-    await cotizacionRepository.save(newCotizacion);
-    return newCotizacion
+    const newCotizacionDB = await cotizacionRepository.save(newCotizacion);
+    return new ResDTO(newCotizacionDB.id,true,"La cotizacion fue creada")
 }
 
 const softDeleteCotizacion = async (id : number) =>{
@@ -88,7 +89,7 @@ const updateCotizacion = async ({monedas, valor,fechaCotizacion,fechaVigencia}:C
         const newCoti = cotizacionRepository.create({valor,fechaCotizacion,fechaVigencia,monedas : monedasList})
         Object.assign(cotiFound, newCoti)
         await cotizacionRepository.save(cotiFound)
-        return cotiFound
+        return true
     }else{
         return false
     }

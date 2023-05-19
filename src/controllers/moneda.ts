@@ -1,5 +1,5 @@
 import {Request, Response} from 'express'
-import {createMoneda, viewAllMonedas, viewOneMoneda} from "../services/monedaService";
+import {createMoneda, updateMoneda, viewAllMonedas, viewOneMoneda} from "../services/monedaService";
 import {StatusCodes} from "http-status-codes";
 
 const postMoneda = async ({body}: Request, res:Response ) =>{
@@ -41,5 +41,21 @@ const getAllMonedas = async (req:Request, res:Response)=>{
         })
     }
 }
+const putMoneda = async ({body,params}:Request,res:Response) =>{
+    try {
+        const id = parseInt(params.id)
+        const monedaUpdated = await updateMoneda(body,id)
+        if (!monedaUpdated) throw "No existe la moneda seleccionada en la base de datos"
+        res.status(StatusCodes.OK).send({
+            success: true,
+            message: "La moneda fue actualizada"
+        })
+    }catch (e) {
+        res.status(StatusCodes.NOT_FOUND).json({
+            success: false,
+            message: e
+        })
+    }
+}
 
-export {getOneMoneda,postMoneda,getAllMonedas}
+export {getOneMoneda,postMoneda,getAllMonedas,putMoneda}

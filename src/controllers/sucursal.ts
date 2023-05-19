@@ -23,7 +23,7 @@ const delSucursal = async ({params}:Request, res:Response) =>{
         if(!deleteSucursalActual) throw "No existe la sucursal";
         res.status(StatusCodes.OK).json({
             success: true,
-            message: `La sucursal "${deleteSucursalActual}" fue borrada`
+            message: `La sucursal fue borrada`
         })
     } catch (error) {
         res.status(StatusCodes.NOT_FOUND).json({

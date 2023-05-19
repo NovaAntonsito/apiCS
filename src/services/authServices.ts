@@ -1,10 +1,11 @@
-import { userDTO } from './interfaces/userDTO';
-import { getDataSource } from "../config/DBConfig";
-import { User } from "../models/user";
-import { Sucursales } from "../models/sucursal";
-import { encrypt, verifyPass } from "../utils/handlePassword";
-import { Repository } from "typeorm";
-import { genToken } from "../utils/handleJWT";
+import {userDTO} from './interfaces/userDTO';
+import {getDataSource} from "../config/DBConfig";
+import {User} from "../models/user";
+import {Sucursales} from "../models/sucursal";
+import {encrypt, verifyPass} from "../utils/handlePassword";
+import {Repository} from "typeorm";
+import {genToken} from "../utils/handleJWT";
+import {ResDTO} from "./interfaces/RespuestaDTO";
 
 let UserRepository: Repository<User>;
 let SucursalRepository: Repository<Sucursales>;
@@ -48,8 +49,8 @@ const registerNewUser = async ({username,password,email,sucursales}: userDTO) =>
       username,
       sucursales: sucursalList,
     });
-    await UserRepository.save(newUser);
-    return newUser;
+    const newUserDB =await UserRepository.save(newUser);
+    return new ResDTO(newUserDB.id, true, "El usuario fue creado");
   } catch (e) {
     console.log(e);
   }

@@ -53,6 +53,10 @@ const DeleteCotizacion = async ({params}:Request, res:Response) =>{
         const id = parseInt(params.id)
         const deletedCotizacion = await softDeleteCotizacion(id);
         if(!deletedCotizacion)throw "No existe esa cotizacion"
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: "La cotizacion fue borrada"
+        })
     }catch (e) {
         res.status(StatusCodes.NOT_FOUND).json({
             success: false,
@@ -66,7 +70,10 @@ const patchCotizacion = async ({body,params}:Request, res:Response)=>{
         const id = parseInt(params.id)
         const updatedCotizacion = await updateCotizacion(body, id)
         if (!updatedCotizacion) throw "No existe la cotizacion"
-        res.send(updatedCotizacion)
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message : "La cotizacion fue actualizada"
+        })
     }catch (e) {
         res.status(StatusCodes.NOT_FOUND).json({
             success: false,

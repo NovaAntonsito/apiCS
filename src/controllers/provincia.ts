@@ -84,7 +84,6 @@ const PatchProvincia = async ({body, params}:Request, res:Response) => {
     if(!updatedProvincia) throw "No se encontro la provincia"
     res.status(StatusCodes.OK).json({
         success : true,
-        data : updatedProvincia,
         message : "Actualizado"
     })
     }catch(e){

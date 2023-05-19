@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {getAllMonedas, getOneMoneda, postMoneda} from "../controllers/moneda";
+import {getAllMonedas, getOneMoneda, postMoneda, putMoneda} from "../controllers/moneda";
 
 
 const router = Router()
@@ -15,7 +15,7 @@ router.get('/:id',getOneMoneda )
 router.delete('/:id', )
 
 //Put-Patch
-router.patch('/:id', )
+router.put('/:id', putMoneda)
 
 //Post
 router.post('',postMoneda)

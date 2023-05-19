@@ -3,6 +3,7 @@ import { Repository } from "typeorm";
 import { Provincia } from "../models/provincia";
 import { Sucursales } from "../models/sucursal";
 import { provinciaDTO } from './interfaces/provinciaDTO';
+import {ResDTO} from "./interfaces/RespuestaDTO";
 
 let ProvinciaRepository: Repository<Provincia>;
 let SucursalRepository: Repository<Sucursales>;
@@ -29,8 +30,8 @@ const createProvincia = async ({nombre} : provinciaDTO) => {
   });
   if (provinciaFound) return false;
   const newProvincia = await ProvinciaRepository.create({ nombre });
-  await ProvinciaRepository.save(newProvincia);
-  return newProvincia;
+  const newProvinciaDB = await ProvinciaRepository.save(newProvincia);
+  return new ResDTO(newProvinciaDB.id, true, "La provincia fue creada");
 };
 
 const viewAllProvincias = async () => {
