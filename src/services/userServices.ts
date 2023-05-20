@@ -18,7 +18,7 @@ const initRepo = async () => {
 initRepo();
 export const viewAllUsers = async (pageNumber: number, pageSize: number) => {
   await initRepo()
-  const allUsers = await userRepository.find({
+  const [allUsers, totalRecords] = await userRepository.findAndCount({
     relations:["sucursales"],
     skip: (pageNumber - 1) * pageSize,
     take: pageSize})
@@ -30,6 +30,7 @@ export const viewAllUsers = async (pageNumber: number, pageSize: number) => {
   return {
     data: allUsersMod,
     perPage: pageSize,
+    totalRecords : totalRecords,
     next: pageNumber + 1,
     previous : pageNumber<=0 ? 0 : pageNumber-1
   };
@@ -41,7 +42,6 @@ export const viewOneUser = async (id: number) => {
     where: { id },
     relations: ["sucursales"],
   });
-
   if (!userFound) {
     return;
   }

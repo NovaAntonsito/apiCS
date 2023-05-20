@@ -1,8 +1,6 @@
 import {Cotizaciones} from "../models/cotizacion";
 import {Repository} from "typeorm";
 import {getDataSource} from "../config/DBConfig";
-import {Provincia} from "../models/provincia";
-import {Sucursales} from "../models/sucursal";
 import {CotizacionDTO} from "./interfaces/cotizacionDTO";
 import {Moneda} from "../models/moneda";
 import {MonedaDTO} from "./interfaces/monedaDTO";
@@ -29,7 +27,7 @@ initRepo();
 
 const viewAllCotizaciones = async (pageNumber: number, pageSize: number) =>{
     await initRepo();
-    const allCotizaciones = await cotizacionRepository.find({
+    const [allCotizaciones, totalRecords] = await cotizacionRepository.findAndCount({
         where:{deleted: false},
         relations:["monedas"],
         skip: (pageNumber - 1) * pageSize,
@@ -38,11 +36,31 @@ const viewAllCotizaciones = async (pageNumber: number, pageSize: number) =>{
     return {
         data: allCotizaciones,
         perPage: pageSize,
+        totalRecords : totalRecords,
         next: pageNumber + 1,
         previous : pageNumber<=0 ? 0 : pageNumber-1
     };
 }
 
+const searchByVigenciaAndCode = async (code: string, fechaV : Date, pageNumber : number, pageSize : number) =>{
+    await initRepo();
+    const [searchActual, totalFound] = await cotizacionRepository
+        .createQueryBuilder('cotizacion')
+        .innerJoinAndSelect('cotizacion.monedas', 'moneda')
+        .where('cotizacion.fechaVigencia = :fechaV', { fechaV })
+        .andWhere('moneda.codigo = :code', { code })
+        .skip((pageNumber - 1)* pageSize)
+        .take(pageSize)
+        .getManyAndCount();
+    if(searchActual.length === 0) return false;
+    return {
+        data: searchActual,
+        perPage: pageSize,
+        totalFound : totalFound,
+        next: pageNumber + 1,
+        previous : pageNumber<=0 ? 0 : pageNumber - 1
+    }
+}
 const viewOneCotizaciones = async (id : number) =>{
     await initRepo()
     const cotizacion = await cotizacionRepository.findOne({where:{id}, relations: ["monedas"]})
@@ -105,4 +123,4 @@ const updateCotizacion = async ({monedas, valor,fechaCotizacion,fechaVigencia}:C
 }
 
 
-export {createCotizacion,viewAllCotizaciones,viewOneCotizaciones,softDeleteCotizacion, updateCotizacion}
+export {createCotizacion,viewAllCotizaciones,viewOneCotizaciones,softDeleteCotizacion, updateCotizacion,searchByVigenciaAndCode}

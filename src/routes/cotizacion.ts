@@ -4,27 +4,30 @@ import {
     getAllCotizaciones,
     getOneCotizaciones,
     patchCotizacion,
-    postCotizacion
+    postCotizacion,searchByCodigoFecha
 } from "../controllers/cotizaciones";
 
 
 const router = Router()
 
 
-//Get All
-router.get('', getAllCotizaciones)
+// Get All
+router.get('', getAllCotizaciones);
 
-//Get One
-router.get('/:id', getOneCotizaciones)
+// Busqueda por codigo y por fecha de vigencia
+router.get('/searchby', searchByCodigoFecha);
 
-//Delete
-router.delete('/:id', DeleteCotizacion)
+// Get One
+router.get('/:id', getOneCotizaciones);
 
-//Put-Patch
-router.put('/:id', patchCotizacion)
+// Delete
+router.delete('/:id', DeleteCotizacion);
 
-//Post
-router.post('', postCotizacion)
+// Put-Patch
+router.put('/:id', patchCotizacion);
+
+// Post
+router.post('', postCotizacion);
 
 
 export {router}
