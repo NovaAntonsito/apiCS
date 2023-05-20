@@ -45,7 +45,7 @@ const deleteSucursal = async (id : number) =>{
 
 const viewAllSucursales = async (pageNumber: number, pageSize: number) => {
     await initRepo();
-    const sucursalesFound = await SucursalRepository.find({
+    const [sucursalesFound, totalCount] = await SucursalRepository.findAndCount({
         relations: ["provincia"],
         skip: (pageNumber - 1) * pageSize,
         take: pageSize
@@ -54,6 +54,7 @@ const viewAllSucursales = async (pageNumber: number, pageSize: number) => {
     return {
         data: sucursalesFound,
         perPage: pageSize,
+        totalRecords: totalCount,
         next: pageNumber + 1,
         previous : pageNumber<=0 ? 0 : pageNumber-1
     };

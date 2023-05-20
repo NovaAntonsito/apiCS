@@ -25,7 +25,7 @@ initRepo();
 //TODO Pass every arrow function args to a provinciaDTO
 const createProvincia = async ({nombre} : provinciaDTO) => {
   await initRepo();
-  const provinciaFound = await ProvinciaRepository.findOne({
+  const provinciaFound  = await ProvinciaRepository.findOne({
     where: { nombre },
   });
   if (provinciaFound) return false;
@@ -36,7 +36,7 @@ const createProvincia = async ({nombre} : provinciaDTO) => {
 
 const viewAllProvincias = async (pageNumber: number, pageSize: number) => {
   await initRepo();
-  const provinciaFound = await ProvinciaRepository.find({
+  const [provinciaFound, totalCount] = await ProvinciaRepository.findAndCount({
     relations: ["sucursales"],
     skip: (pageNumber - 1) * pageSize,
     take: pageSize});
@@ -44,6 +44,7 @@ const viewAllProvincias = async (pageNumber: number, pageSize: number) => {
   return {
     data: provinciaFound,
     perPage: pageSize,
+    totalRecords: totalCount,
     next: pageNumber + 1,
     previous : pageNumber<=0 ? 0 : pageNumber-1
   };
