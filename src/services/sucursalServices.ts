@@ -24,7 +24,7 @@ const initRepo = async () => {
 
 initRepo()
 
-//TODO Pass every arrow function args to a sucursalDTO
+
 const createSucursal = async ({nombre, provincia} : SucursalDTO) =>{
     await initRepo()
     const provinciaFound = await ProvinciaRepository.findOne({where:{id : provincia?.id, nombre : provincia?.nombre}})
