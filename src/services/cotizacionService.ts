@@ -1,17 +1,25 @@
-import {Cotizaciones} from "../models/cotizacion";
-import {Repository} from "typeorm";
-import {getDataSource} from "../config/DBConfig";
-import {Provincia} from "../models/provincia";
-import {Sucursales} from "../models/sucursal";
-import {CotizacionDTO} from "./interfaces/cotizacionDTO";
-import {Moneda} from "../models/moneda";
-import {MonedaDTO} from "./interfaces/monedaDTO";
-import {ResDTO} from "./interfaces/RespuestaDTO";
+import { Cotizaciones } from "../models/cotizacion";
+import { Repository } from "typeorm";
+import { getDataSource } from "../config/DBConfig";
+import { Provincia } from "../models/provincia";
+import { Sucursales } from "../models/sucursal";
+import { CotizacionDTO } from "./interfaces/cotizacionDTO";
+import { Moneda } from "../models/moneda";
+import { MonedaDTO } from "./interfaces/monedaDTO";
+import { ResDTO } from "./interfaces/RespuestaDTO";
 
 
-let cotizacionRepository : Repository<Cotizaciones>;
-let monedaRepository : Repository<Moneda>
+let cotizacionRepository: Repository<Cotizaciones>;
+let monedaRepository: Repository<Moneda>
 
+interface MiCotizacion {
+    id?: number,
+    monedas: MonedaDTO
+    valor: number
+    fechaCotizacion: Date
+    fechaVigencia: Date
+    deleted: boolean
+}
 
 const initRepo = async () => {
     try {
@@ -26,10 +34,10 @@ const initRepo = async () => {
 
 initRepo();
 
-
+/*
 const viewAllCotizaciones = async (pageNumber: number, pageSize: number) =>{
     await initRepo();
-    const [allCotizaciones,totalCount] = await cotizacionRepository.findAndCount({
+  const [allCotizaciones, totalCount] = await cotizacionRepository.findAndCount({
         where:{deleted: false},
         relations:["monedas"],
         skip: (pageNumber - 1) * pageSize,
@@ -43,22 +51,53 @@ const viewAllCotizaciones = async (pageNumber: number, pageSize: number) =>{
         previous : pageNumber<=0 ? 0 : pageNumber-1
     };
 }
+*/
 
-const viewOneCotizaciones = async (id : number) =>{
+const viewAllCotizaciones = async (pageNumber: number, pageSize: number) => {
+    await initRepo();
+    const [allCotizaciones, totalCount] = await cotizacionRepository.findAndCount({
+        where: { deleted: false },
+        relations: ["monedas"],
+        skip: (pageNumber - 1) * pageSize,
+        take: pageSize
+    });
+
+    if (allCotizaciones.length === 0) return false;
+
+    const formattedCotizaciones = allCotizaciones.map(cotizacion => {
+        return {
+            ...cotizacion,
+            monedas: cotizacion.monedas[0]
+        };
+    });
+
+    return {
+        data: formattedCotizaciones,
+        perPage: pageSize,
+        totalRecords: totalCount,
+        next: pageNumber + 1,
+        previous: pageNumber <= 0 ? 0 : pageNumber - 1
+    };
+};
+
+const viewOneCotizaciones = async (id: number) => {
     await initRepo()
-    const cotizacion = await cotizacionRepository.findOne({where:{id}, relations: ["monedas"]})
+    const cotizacion = await cotizacionRepository.findOne({ where: { id }, relations: ["monedas"] })
     if (!cotizacion) return false;
-    return cotizacion
+    return {
+        ...cotizacion,
+        monedas: cotizacion.monedas[0]
+    };
 }
 
-const createCotizacion = async ({monedas, valor,fechaCotizacion,fechaVigencia}: CotizacionDTO) =>{
+const createCotizacion = async ({ monedas, valor, fechaCotizacion, fechaVigencia }: CotizacionDTO) => {
     await initRepo();
-    const cotiFound = await cotizacionRepository.findOne({where:{monedas,valor,fechaCotizacion,fechaVigencia}})
-    if(cotiFound) return false;
-    let monedasList : Moneda[] = [];
-    await Promise.all(monedas.map(async ({codigo,id} : MonedaDTO) =>{
-        const monedaFound = await monedaRepository.findOne({where:{codigo, id}}) as Moneda;
-        if(monedaFound){
+    const cotiFound = await cotizacionRepository.findOne({ where: { monedas, valor, fechaCotizacion, fechaVigencia } })
+    if (cotiFound) return false;
+    let monedasList: Moneda[] = [];
+    await Promise.all(monedas.map(async ({ codigo, id }: MonedaDTO) => {
+        const monedaFound = await monedaRepository.findOne({ where: { codigo, id } }) as Moneda;
+        if (monedaFound) {
             monedasList.push(monedaFound)
         }
     }));
@@ -67,43 +106,45 @@ const createCotizacion = async ({monedas, valor,fechaCotizacion,fechaVigencia}: 
         valor,
         fechaCotizacion,
         fechaVigencia,
-        monedas : monedasList})
+        monedas: monedasList
+    })
 
     const newCotizacionDB = await cotizacionRepository.save(newCotizacion);
-    return new ResDTO(newCotizacionDB.id,true,"La cotizacion fue creada")
+    return new ResDTO(newCotizacionDB.id, true, "La cotizacion fue creada")
 }
 
-const softDeleteCotizacion = async (id : number) =>{
+const softDeleteCotizacion = async (id: number) => {
     await initRepo();
-    const cotiFound = await cotizacionRepository.findOne({where:{id}})
-    if(cotiFound){
+    const cotiFound = await cotizacionRepository.findOne({ where: { id } })
+    if (cotiFound) {
         cotiFound.deleted = true;
         await cotizacionRepository.save(cotiFound);
         return true
-    }else{
+    } else {
         return false
     }
 }
 
-const updateCotizacion = async ({monedas, valor,fechaCotizacion,fechaVigencia}:CotizacionDTO, id : number) =>{
+const updateCotizacion = async ({ monedas, valor, fechaCotizacion, fechaVigencia }: CotizacionDTO, id: number) => {
     await initRepo();
-    const cotiFound = await cotizacionRepository.findOne({where:{id}})
-    if(cotiFound){
+
+    const cotiFound = await cotizacionRepository.findOne({ where: { id } })
+    if (cotiFound) {
         let monedasList: Moneda[] = []
-        await Promise.all(monedas.map(async ({codigo,id} : MonedaDTO) =>{
-            const monedaFound = await monedaRepository.findOne({where:{codigo, id}}) as Moneda;
-            if(monedaFound){
+        await Promise.all(monedas.map(async ({ codigo, id }: MonedaDTO) => {
+            const monedaFound = await monedaRepository.findOne({ where: { codigo, id } }) as Moneda;
+            if (monedaFound) {
                 monedasList.push(monedaFound)
             }
         }));
-        const newCoti = cotizacionRepository.create({valor,fechaCotizacion,fechaVigencia,monedas : monedasList})
+        const newCoti = cotizacionRepository.create({ valor, fechaCotizacion, fechaVigencia, monedas: monedasList })
         Object.assign(cotiFound, newCoti)
         await cotizacionRepository.save(cotiFound)
         return true
-    }else{
+    } else {
         return false
     }
 }
 
 
-export {createCotizacion,viewAllCotizaciones,viewOneCotizaciones,softDeleteCotizacion, updateCotizacion}
+export { createCotizacion, viewAllCotizaciones, viewOneCotizaciones, softDeleteCotizacion, updateCotizacion }
