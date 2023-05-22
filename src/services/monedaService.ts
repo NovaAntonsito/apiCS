@@ -27,14 +27,14 @@ const createMoneda = async ({codigo,nombre,locale}:MonedaDTO) =>{
 
 const viewAllMonedas = async (pageNumber: number, pageSize: number) =>{
     await initRepo()
-    const [monedasFound, totalRecords] = await monedaRepository.findAndCount({
+    const [monedasFound,totalCount ] = await monedaRepository.findAndCount({
         skip: (pageNumber - 1) * pageSize,
         take: pageSize});
     if (monedasFound.length === 0) return false;
     return {
         data: monedasFound,
         perPage: pageSize,
-        totalRecords : totalRecords,
+        totalRecords: totalCount,
         next: pageNumber + 1,
         previous : pageNumber<=0 ? 0 : pageNumber-1
     };
