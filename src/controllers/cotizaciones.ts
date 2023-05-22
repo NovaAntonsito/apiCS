@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import {
-    createCotizacion, searchByVigenciaAndCode,
+    createCotizacion,
     softDeleteCotizacion, updateCotizacion,
     viewAllCotizaciones,
     viewOneCotizaciones
@@ -17,6 +17,7 @@ const postCotizacion = async ({body}: Request, res: Response)=>{
             success: false,
             message: e
         })
+        console.log(e)
     }
 
 }
@@ -35,24 +36,24 @@ const getAllCotizaciones = async ({query}: Request, res:Response) =>{
     }
 }
 
-const searchByCodigoFecha = async ({query}:Request,res:Response)=>{
-    try {
-        const page = parseInt(query.page as string) || 1;
-        const pageSize = parseInt(query.pageSize as string) || 10;
-        const fecha = new Date(query.fecha as string)
-        const codigo = query.code as string
-        const searchActual = await searchByVigenciaAndCode(codigo,fecha,page,pageSize);
-        if(!searchActual) throw "No existen cotizaciones con esos campos"
-        res.send(searchActual)
-    }catch (e) {
-        res.status(StatusCodes.NOT_FOUND).json({
-            success: false,
-            message: e
-        })
-    }
-
-
-}
+// const searchByCodigoFecha = async ({query}:Request,res:Response)=>{
+//     try {
+//         const page = parseInt(query.page as string) || 1;
+//         const pageSize = parseInt(query.pageSize as string) || 10;
+//         const fecha = new Date(query.fecha as string)
+//         const codigo = query.code as string
+//         const searchActual = await searchByVigenciaAndCode(codigo,fecha,page,pageSize);
+//         if(!searchActual) throw "No existen cotizaciones con esos campos"
+//         res.send(searchActual)
+//     }catch (e) {
+//         res.status(StatusCodes.NOT_FOUND).json({
+//             success: false,
+//             message: e
+//         })
+//     }
+//
+//
+// }
 
 const getOneCotizaciones = async ({params}:Request, res:Response) =>{
     try {
@@ -103,4 +104,4 @@ const patchCotizacion = async ({body,params}:Request, res:Response)=>{
     }
 }
 
-export {getAllCotizaciones,getOneCotizaciones, postCotizacion,DeleteCotizacion, patchCotizacion, searchByCodigoFecha}
+export {getAllCotizaciones,getOneCotizaciones, postCotizacion,DeleteCotizacion, patchCotizacion}

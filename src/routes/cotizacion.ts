@@ -4,7 +4,7 @@ import {
     getAllCotizaciones,
     getOneCotizaciones,
     patchCotizacion,
-    postCotizacion,searchByCodigoFecha
+    postCotizacion,
 } from "../controllers/cotizaciones";
 
 
@@ -15,7 +15,7 @@ const router = Router()
 router.get('', getAllCotizaciones);
 
 // Busqueda por codigo y por fecha de vigencia
-router.get('/searchby', searchByCodigoFecha);
+//router.get('/searchby', searchByCodigoFecha);
 
 // Get One
 router.get('/:id', getOneCotizaciones);
