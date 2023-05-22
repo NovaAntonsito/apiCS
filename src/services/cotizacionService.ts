@@ -29,7 +29,7 @@ initRepo();
 
 const viewAllCotizaciones = async (pageNumber: number, pageSize: number) =>{
     await initRepo();
-    const allCotizaciones = await cotizacionRepository.find({
+    const [allCotizaciones,totalCount] = await cotizacionRepository.findAndCount({
         where:{deleted: false},
         relations:["monedas"],
         skip: (pageNumber - 1) * pageSize,
@@ -38,6 +38,7 @@ const viewAllCotizaciones = async (pageNumber: number, pageSize: number) =>{
     return {
         data: allCotizaciones,
         perPage: pageSize,
+        totalRecords: totalCount,
         next: pageNumber + 1,
         previous : pageNumber<=0 ? 0 : pageNumber-1
     };
