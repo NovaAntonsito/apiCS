@@ -7,6 +7,7 @@ import { CotizacionDTO } from "./interfaces/cotizacionDTO";
 import { Moneda } from "../models/moneda";
 import { MonedaDTO } from "./interfaces/monedaDTO";
 import { ResDTO } from "./interfaces/RespuestaDTO";
+import { obtenerFechaHora } from '../utils/obtenerFechaHora';
 
 
 let cotizacionRepository: Repository<Cotizaciones>;
@@ -57,9 +58,16 @@ const createCotizacion = async ({ moneda, valor,estado, fechaCotizacion, fechaVi
     const cotiFound = await cotizacionRepository.findOne({ where: { moneda,estado, valor, fechaCotizacion, fechaVigencia } })
     if(cotiFound) return false;
     const monedaFound = await monedaRepository.findOne({where:{id : moneda.id, nombre : moneda.nombre}}) as Moneda
+    
+    //var fechaActual = moment().tz('America/Argentina/Buenos_Aires').format('YYYY-MM-DD HH:mm:ss');
+    const fechaActual = new Date // obtenerFechaHora()
+    console.log(fechaActual);
+
+    const fechaCotizacionActual = fechaCotizacion ? fechaCotizacion : fechaActual; // Asignar fecha actual si no se proporciona una fecha
+
     const newCotizacion = cotizacionRepository.create({
         valor,
-        fechaCotizacion,
+        fechaCotizacion: fechaCotizacionActual,
         fechaVigencia,
         estado,
         moneda: monedaFound

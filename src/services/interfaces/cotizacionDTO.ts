@@ -6,7 +6,7 @@ export interface CotizacionDTO{
     moneda : MonedaDTO
     valor : number
     estado : Estado
-    fechaCotizacion : Date
-    fechaVigencia : Date
+    fechaCotizacion? : Date
+    fechaVigencia?: Date
     deleted : boolean
 }
