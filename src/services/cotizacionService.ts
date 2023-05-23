@@ -1,13 +1,10 @@
 import { Cotizaciones } from "../models/cotizacion";
 import { Repository } from "typeorm";
 import { getDataSource } from "../config/DBConfig";
-import { Provincia } from "../models/provincia";
-import { Sucursales } from "../models/sucursal";
 import { CotizacionDTO } from "./interfaces/cotizacionDTO";
 import { Moneda } from "../models/moneda";
-import { MonedaDTO } from "./interfaces/monedaDTO";
 import { ResDTO } from "./interfaces/RespuestaDTO";
-import { obtenerFechaHora } from '../utils/obtenerFechaHora';
+
 
 
 let cotizacionRepository: Repository<Cotizaciones>;
@@ -28,13 +25,18 @@ const initRepo = async () => {
 initRepo();
 
 
-const viewAllCotizaciones = async (pageNumber: number, pageSize: number) => {
+const viewAllCotizaciones = async (pageNumber: number, pageSize: number, order:boolean) => {
     await initRepo();
+    const orderBy = order ? "ASC" : "DESC"
+
     const [allCotizaciones, totalCount] = await cotizacionRepository.findAndCount({
-        where: { deleted: false },
+        where: {deleted : false},
         relations: ["moneda"],
         skip: (pageNumber - 1) * pageSize,
-        take: pageSize
+        take: pageSize,
+        order: {
+            fechaCotizacion: orderBy
+        }
     });
     if (allCotizaciones.length === 0) return false;
     return {
@@ -46,32 +48,49 @@ const viewAllCotizaciones = async (pageNumber: number, pageSize: number) => {
     };
 };
 
+const viewAllCotizacionesEvenDeleted = async (pageNumber:number, pageSize : number, order:boolean) =>{
+    await initRepo();
+    const orderBy = order ? "ASC" : "DESC"
+    const [allCotizaciones, totalCount] = await cotizacionRepository.findAndCount({
+        relations: ["moneda"],
+        skip: (pageNumber - 1) * pageSize,
+        take: pageSize,
+        order: {
+            fechaCotizacion: orderBy
+        }
+    });
+    if (allCotizaciones.length === 0) return false;
+    return {
+        data: allCotizaciones,
+        perPage: pageSize,
+        totalRecords: totalCount,
+        next: pageNumber + 1,
+        previous: pageNumber <= 0 ? 0 : pageNumber - 1
+    };
+}
+
 const viewOneCotizaciones = async (id: number) => {
     await initRepo()
-    const cotizacion = await cotizacionRepository.findOne({ where: { id }, relations: ["monedas"] })
+    const cotizacion = await cotizacionRepository.findOne({ where: { id }, relations: ["moneda"] })
     if (!cotizacion) return false;
     return cotizacion
 }
 
 const createCotizacion = async ({ moneda, valor,estado }: CotizacionDTO) => {
     await initRepo();
-
-    console.log(moneda,valor, estado);
     const monedaFound = await monedaRepository.findOne({where:{id : moneda.id }}) as Moneda
-    if(!monedaFound) {
-        return false;
+    const cotizacionAnterior = await cotizacionRepository
+        .createQueryBuilder("c")
+        .innerJoin("c.moneda", "moneda")
+        .where("moneda.id = :id", { id: monedaFound.id })
+        .andWhere("c.estado = ':estado'", { estado: estado  })
+        .getOne()
+    if(cotizacionAnterior){
+         console.log(cotizacionAnterior.id)
+         await softDeleteCotizacion(cotizacionAnterior.id)
     }
-    console.log(monedaFound)
-    const cotiFound = await cotizacionRepository.findOne( { where: {  moneda: { id: monedaFound.id }, estado, deleted: false, fechaVigencia: undefined }  } )
-    console.log(cotiFound)
-
-    if(cotiFound){
-        await softDeleteCotizacion(cotiFound.id)
-    } 
-    
-    //var fechaActual = moment().tz('America/Argentina/Buenos_Aires').format('YYYY-MM-DD HH:mm:ss');
-    const fechaActual = new Date // obtenerFechaHora()
-    const fechaCotizacionActual =  fechaActual; // Asignar fecha actual si no se proporciona una fecha
+    if(!monedaFound) return false;
+    const fechaCotizacionActual =  new Date()
     const newCotizacion = cotizacionRepository.create({
         valor,
         fechaCotizacion: fechaCotizacionActual,
@@ -86,7 +105,7 @@ const createCotizacion = async ({ moneda, valor,estado }: CotizacionDTO) => {
 const softDeleteCotizacion = async (id: number) => {
     await initRepo();
     const cotiFound = await cotizacionRepository.findOne({ where: { id } })
-    const fechaActual = new Date // obtenerFechaHora()
+    const fechaActual = new Date()
         
     if (cotiFound) {
         cotiFound.fechaVigencia = fechaActual
@@ -98,22 +117,7 @@ const softDeleteCotizacion = async (id: number) => {
     }
 }
 
-const updateCotizacion = async ({ moneda, valor, estado ,fechaCotizacion, fechaVigencia }: CotizacionDTO, id: number) => {
-    await initRepo();
-
-    const cotiFound = await cotizacionRepository.findOne({ where: { id } })
-    console.log(cotiFound)
-    if (cotiFound) {
-        const monedaFound = await monedaRepository.findOne({where: {id : moneda.id, nombre : moneda.nombre}}) as Moneda
-        console.log(monedaFound)
-        const newCoti = cotizacionRepository.create({ valor, fechaCotizacion,estado ,fechaVigencia, moneda: monedaFound })
-        Object.assign(cotiFound, newCoti)
-        await cotizacionRepository.save(cotiFound)
-        return true
-    } else {
-        return false
-    }
-}
 
 
-export { createCotizacion, viewAllCotizaciones, viewOneCotizaciones, softDeleteCotizacion, updateCotizacion }
+
+export { createCotizacion, viewAllCotizaciones, viewOneCotizaciones, softDeleteCotizacion, viewAllCotizacionesEvenDeleted}

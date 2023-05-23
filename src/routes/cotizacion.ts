@@ -1,30 +1,22 @@
 import {Router} from "express";
 import {
-    DeleteCotizacion,
+    getAllAdmin,
     getAllCotizaciones,
     getOneCotizaciones,
-    patchCotizacion,
     postCotizacion,
 } from "../controllers/cotizaciones";
 
 
 const router = Router()
 
-
+router.get('/all', getAllAdmin)
 // Get All
-router.get('', getAllCotizaciones);
 
-// Busqueda por codigo y por fecha de vigencia
-//router.get('/searchby', searchByCodigoFecha);
+router.get('', getAllCotizaciones);
 
 // Get One
 router.get('/:id', getOneCotizaciones);
 
-// Delete
-router.delete('/:id', DeleteCotizacion);
-
-// Put-Patch
-router.put('/:id', patchCotizacion);
 
 // Post
 router.post('', postCotizacion);

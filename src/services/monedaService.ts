@@ -29,7 +29,8 @@ const viewAllMonedas = async (pageNumber: number, pageSize: number) =>{
     await initRepo()
     const [monedasFound,totalCount ] = await monedaRepository.findAndCount({
         skip: (pageNumber - 1) * pageSize,
-        take: pageSize});
+        take: pageSize
+    });
     if (monedasFound.length === 0) return false;
     return {
         data: monedasFound,
