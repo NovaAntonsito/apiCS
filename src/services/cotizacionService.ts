@@ -53,22 +53,29 @@ const viewOneCotizaciones = async (id: number) => {
     return cotizacion
 }
 
-const createCotizacion = async ({ moneda, valor,estado, fechaCotizacion, fechaVigencia }: CotizacionDTO) => {
+const createCotizacion = async ({ moneda, valor,estado }: CotizacionDTO) => {
     await initRepo();
-    const cotiFound = await cotizacionRepository.findOne({ where: { moneda,estado, valor, fechaCotizacion, fechaVigencia } })
-    if(cotiFound) return false;
-    const monedaFound = await monedaRepository.findOne({where:{id : moneda.id, nombre : moneda.nombre}}) as Moneda
+
+    console.log(moneda,valor, estado);
+    const monedaFound = await monedaRepository.findOne({where:{id : moneda.id }}) as Moneda
+    if(!monedaFound) {
+        return false;
+    }
+    console.log(monedaFound)
+    const cotiFound = await cotizacionRepository.findOne( { where: {  moneda: { id: monedaFound.id }, estado, deleted: false, fechaVigencia: undefined }  } )
+    console.log(cotiFound)
+
+    if(cotiFound){
+        await softDeleteCotizacion(cotiFound.id)
+    } 
     
     //var fechaActual = moment().tz('America/Argentina/Buenos_Aires').format('YYYY-MM-DD HH:mm:ss');
     const fechaActual = new Date // obtenerFechaHora()
-    console.log(fechaActual);
-
-    const fechaCotizacionActual = fechaCotizacion ? fechaCotizacion : fechaActual; // Asignar fecha actual si no se proporciona una fecha
-
+    const fechaCotizacionActual =  fechaActual; // Asignar fecha actual si no se proporciona una fecha
     const newCotizacion = cotizacionRepository.create({
         valor,
         fechaCotizacion: fechaCotizacionActual,
-        fechaVigencia,
+        fechaVigencia: null,
         estado,
         moneda: monedaFound
     })
@@ -79,7 +86,10 @@ const createCotizacion = async ({ moneda, valor,estado, fechaCotizacion, fechaVi
 const softDeleteCotizacion = async (id: number) => {
     await initRepo();
     const cotiFound = await cotizacionRepository.findOne({ where: { id } })
+    const fechaActual = new Date // obtenerFechaHora()
+        
     if (cotiFound) {
+        cotiFound.fechaVigencia = fechaActual
         cotiFound.deleted = true;
         await cotizacionRepository.save(cotiFound);
         return true
