@@ -13,7 +13,7 @@ const router = Router()
 router.get('/all', getAllAdmin)
 // Get All
 
-router.get("/searchCotizaciones", getCotizacionesByMoneda)
+router.get("/moneda", getCotizacionesByMoneda)
 
 router.get('', getAllCotizaciones);
 
