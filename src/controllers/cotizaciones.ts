@@ -13,11 +13,12 @@ const postCotizacion = async ({body}: Request, res: Response)=>{
         if (!newCotizacion) throw "Cotizacion no valida"
         res.send(newCotizacion)
     }catch (e) {
+
+
         res.status(StatusCodes.BAD_REQUEST).json({
             success: false,
             message: e
         })
-        console.log(e)
     }
 
 }
@@ -52,6 +53,7 @@ const getAllAdmin = async ({query}: Request, res:Response) =>{
         })
     }
 }
+
 
 
 const getOneCotizaciones = async ({params}:Request, res:Response) =>{

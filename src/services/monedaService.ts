@@ -3,13 +3,16 @@ import {Repository} from "typeorm";
 import {Moneda} from "../models/moneda";
 import {getDataSource} from "../config/DBConfig";
 import {ResDTO} from "./interfaces/RespuestaDTO";
+import {Cotizaciones} from "../models/cotizacion";
 
 let monedaRepository : Repository<Moneda>;
+let cotizacionRepository: Repository<Cotizaciones>
 
 const initRepo = async () => {
     try {
         const appDataSource = await getDataSource();
         monedaRepository = appDataSource.getRepository(Moneda)
+        cotizacionRepository = appDataSource.getRepository(Cotizaciones)
     } catch (error) {
         console.error(error);
         process.exit(1);
@@ -41,6 +44,26 @@ const viewAllMonedas = async (pageNumber: number, pageSize: number) =>{
     };
 }
 
+const getCotizacionWithMoneda = async (id: number,pageNumber: number, pageSize: number, order : boolean) =>{
+    await initRepo()
+    const orderBy = order ? "ASC" : "DESC"
+    const [cotizacionFound, totalCount] = await cotizacionRepository
+        .createQueryBuilder("c")
+        .innerJoin("c.moneda", "m")
+        .where("m.id = :id", {id : id})
+        .andWhere("c.fecha_Vigencia IS NOT NULL")
+        .skip((pageNumber - 1) * pageSize)
+        .take(pageSize)
+        .getManyAndCount()
+    return {
+        data: cotizacionFound,
+        perPage: pageSize,
+        totalRecords: totalCount,
+        next: pageNumber + 1,
+        previous: pageNumber <= 0 ? 0 : pageNumber - 1
+    };
+}
+
 const viewOneMoneda = async (id : number)=>{
     await initRepo()
     const monedaFound = await monedaRepository.findOne({where:{id}})
@@ -69,4 +92,4 @@ const deleteMoneda = async (id : number) =>{
 
 
 
-export {createMoneda,viewOneMoneda,viewAllMonedas,updateMoneda, deleteMoneda}
+export {createMoneda,viewOneMoneda,viewAllMonedas,updateMoneda, deleteMoneda,getCotizacionWithMoneda}

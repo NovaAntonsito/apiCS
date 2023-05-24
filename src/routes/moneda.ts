@@ -1,9 +1,18 @@
 import {Router} from "express";
-import {getAllMonedas, getOneMoneda, postMoneda, putMoneda, delMoneda} from "../controllers/moneda";
+import {
+    getAllMonedas,
+    getOneMoneda,
+    postMoneda,
+    putMoneda,
+    delMoneda,
+    getCotizacionesByMoneda
+} from "../controllers/moneda";
 
 
 const router = Router()
 
+
+router.get("/searchCotizaciones", getCotizacionesByMoneda)
 
 //Get All
 router.get('',getAllMonedas )
