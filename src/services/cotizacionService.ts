@@ -25,12 +25,12 @@ const initRepo = async () => {
 initRepo();
 
 
-const viewAllCotizaciones = async (pageNumber: number, pageSize: number, order:boolean) => {
+const viewAllCotizaciones = async (pageNumber: number, pageSize: number, order: boolean) => {
     await initRepo();
     const orderBy = order ? "ASC" : "DESC"
 
     const [allCotizaciones, totalCount] = await cotizacionRepository.findAndCount({
-        where: {deleted : false},
+        where: { deleted: false },
         relations: ["moneda"],
         skip: (pageNumber - 1) * pageSize,
         take: pageSize,
@@ -48,7 +48,7 @@ const viewAllCotizaciones = async (pageNumber: number, pageSize: number, order:b
     };
 };
 
-const viewAllCotizacionesEvenDeleted = async (pageNumber:number, pageSize : number, order:boolean) =>{
+const viewAllCotizacionesEvenDeleted = async (pageNumber: number, pageSize: number, order: boolean) => {
     await initRepo();
     const orderBy = order ? "ASC" : "DESC"
     const [allCotizaciones, totalCount] = await cotizacionRepository.findAndCount({
@@ -76,21 +76,22 @@ const viewOneCotizaciones = async (id: number) => {
     return cotizacion
 }
 
-const createCotizacion = async ({ moneda, valor,estado }: CotizacionDTO) => {
+const createCotizacion = async ({ moneda, valor, estado }: CotizacionDTO) => {
     await initRepo();
-    const monedaFound = await monedaRepository.findOne({where:{id : moneda.id }}) as Moneda
+    const monedaFound = await monedaRepository.findOne({ where: { id: moneda.id } }) as Moneda
     const cotizacionAnterior = await cotizacionRepository
         .createQueryBuilder("c")
         .innerJoin("c.moneda", "moneda")
         .where("moneda.id = :id", { id: monedaFound.id })
-        .andWhere("c.estado = ':estado'", { estado: estado  })
+        .andWhere("c.estado = ':estado'", { estado: estado })
+        .andWhere("c.deleted = false")
         .getOne()
-    if(cotizacionAnterior){
-         console.log(cotizacionAnterior.id)
-         await softDeleteCotizacion(cotizacionAnterior.id)
+    if (cotizacionAnterior) {
+        console.log(cotizacionAnterior.id)
+        await softDeleteCotizacion(cotizacionAnterior.id)
     }
-    if(!monedaFound) return false;
-    const fechaCotizacionActual =  new Date()
+    if (!monedaFound) return false;
+    const fechaCotizacionActual = new Date()
     const newCotizacion = cotizacionRepository.create({
         valor,
         fechaCotizacion: fechaCotizacionActual,
@@ -106,7 +107,7 @@ const softDeleteCotizacion = async (id: number) => {
     await initRepo();
     const cotiFound = await cotizacionRepository.findOne({ where: { id } })
     const fechaActual = new Date()
-        
+
     if (cotiFound) {
         cotiFound.fechaVigencia = fechaActual
         cotiFound.deleted = true;
@@ -120,4 +121,4 @@ const softDeleteCotizacion = async (id: number) => {
 
 
 
-export { createCotizacion, viewAllCotizaciones, viewOneCotizaciones, softDeleteCotizacion, viewAllCotizacionesEvenDeleted}
+export { createCotizacion, viewAllCotizaciones, viewOneCotizaciones, softDeleteCotizacion, viewAllCotizacionesEvenDeleted }
