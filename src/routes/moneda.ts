@@ -4,15 +4,12 @@ import {
     getOneMoneda,
     postMoneda,
     putMoneda,
-    delMoneda,
-    getCotizacionesByMoneda
+    delMoneda
+    
 } from "../controllers/moneda";
 
 
 const router = Router()
-
-
-router.get("/searchCotizaciones", getCotizacionesByMoneda)
 
 //Get All
 router.get('',getAllMonedas )

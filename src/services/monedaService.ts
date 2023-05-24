@@ -44,25 +44,7 @@ const viewAllMonedas = async (pageNumber: number, pageSize: number) =>{
     };
 }
 
-const getCotizacionWithMoneda = async (id: number,pageNumber: number, pageSize: number, order : boolean) =>{
-    await initRepo()
-    const orderBy = order ? "ASC" : "DESC"
-    const [cotizacionFound, totalCount] = await cotizacionRepository
-        .createQueryBuilder("c")
-        .innerJoin("c.moneda", "m")
-        .where("m.id = :id", {id : id})
-        .andWhere("c.fecha_Vigencia IS NOT NULL")
-        .skip((pageNumber - 1) * pageSize)
-        .take(pageSize)
-        .getManyAndCount()
-    return {
-        data: cotizacionFound,
-        perPage: pageSize,
-        totalRecords: totalCount,
-        next: pageNumber + 1,
-        previous: pageNumber <= 0 ? 0 : pageNumber - 1
-    };
-}
+
 
 const viewOneMoneda = async (id : number)=>{
     await initRepo()
@@ -92,4 +74,4 @@ const deleteMoneda = async (id : number) =>{
 
 
 
-export {createMoneda,viewOneMoneda,viewAllMonedas,updateMoneda, deleteMoneda,getCotizacionWithMoneda}
+export {createMoneda,viewOneMoneda,viewAllMonedas,updateMoneda, deleteMoneda}

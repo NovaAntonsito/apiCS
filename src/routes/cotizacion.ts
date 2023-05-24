@@ -4,6 +4,7 @@ import {
     getAllCotizaciones,
     getOneCotizaciones,
     postCotizacion,
+    getCotizacionesByMoneda
 } from "../controllers/cotizaciones";
 
 
@@ -11,6 +12,8 @@ const router = Router()
 
 router.get('/all', getAllAdmin)
 // Get All
+
+router.get("/searchCotizaciones", getCotizacionesByMoneda)
 
 router.get('', getAllCotizaciones);
 

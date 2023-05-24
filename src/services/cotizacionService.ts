@@ -103,6 +103,27 @@ const createCotizacion = async ({ moneda, valor, estado }: CotizacionDTO) => {
     return new ResDTO(newCotizacionDB.id, true, "La cotizacion fue creada")
 }
 
+const getCotizacionWithMoneda = async (id: number,pageNumber: number, pageSize: number, order : boolean) =>{
+    await initRepo()
+    const orderBy = order ? "ASC" : "DESC"
+    const [cotizacionFound, totalCount] = await cotizacionRepository
+        .createQueryBuilder("c")
+        .innerJoin("c.moneda", "m")
+        .addSelect("m")
+        .where("m.id = :id", {id : id})
+        .andWhere("c.fecha_Vigencia IS NULL")
+        .skip((pageNumber - 1) * pageSize)
+        .take(pageSize)
+        .getManyAndCount()
+    return {
+        data: cotizacionFound,
+        perPage: pageSize,
+        totalRecords: totalCount,
+        next: pageNumber + 1,
+        previous: pageNumber <= 0 ? 0 : pageNumber - 1
+    };
+}
+
 const softDeleteCotizacion = async (id: number) => {
     await initRepo();
     const cotiFound = await cotizacionRepository.findOne({ where: { id } })
@@ -121,4 +142,11 @@ const softDeleteCotizacion = async (id: number) => {
 
 
 
-export { createCotizacion, viewAllCotizaciones, viewOneCotizaciones, softDeleteCotizacion, viewAllCotizacionesEvenDeleted }
+export { 
+    createCotizacion, 
+    viewAllCotizaciones, 
+    viewOneCotizaciones,
+    softDeleteCotizacion, 
+    viewAllCotizacionesEvenDeleted,
+    getCotizacionWithMoneda
+ }

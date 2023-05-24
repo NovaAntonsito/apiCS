@@ -3,7 +3,8 @@ import {
     createCotizacion,
     viewAllCotizaciones,
     viewAllCotizacionesEvenDeleted,
-    viewOneCotizaciones
+    viewOneCotizaciones,
+    getCotizacionWithMoneda
 } from "../services/cotizacionService";
 import {StatusCodes} from "http-status-codes";
 
@@ -72,5 +73,27 @@ const getOneCotizaciones = async ({params}:Request, res:Response) =>{
 
 }
 
+const getCotizacionesByMoneda = async ({query}:Request,res:Response)=>{
+    try {
+        const id = parseInt(query.id as string)
+        const page = parseInt(query.page as string) || 1;
+        const pageSize = parseInt(query.pageSize as string) || 10;
+        const order = query.desc === "true" ? true : false;
+        console.log(id) 
+        const cotizacionesFound = await getCotizacionWithMoneda(id,page,pageSize,order)
+        res.send(cotizacionesFound)
+    }catch (e) {
+        res.status(StatusCodes.NOT_FOUND).json({
+            success: false,
+            message: e
+        })
+    }
+}
 
-export {getAllCotizaciones,getOneCotizaciones, postCotizacion, getAllAdmin}
+
+export { 
+    getAllCotizaciones, 
+    getOneCotizaciones, 
+    postCotizacion, 
+    getAllAdmin, 
+    getCotizacionesByMoneda}
