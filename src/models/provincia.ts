@@ -1,5 +1,7 @@
-import { Column, Entity, JoinColumn, JoinTable, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import { Sucursales } from './sucursal';
+import {Persona} from "./persona";
+import {Pais} from "./pais";
 
 @Entity({name: "Provincia"})
 export class Provincia {
@@ -11,4 +13,10 @@ export class Provincia {
 
     @OneToMany(()=>Sucursales,(sucursales) => sucursales.provincia)
     sucursales : Sucursales[] | null
+
+    @OneToMany(type => Persona, (persona) => persona.provincia, {nullable : true})
+    personas : Persona[] | null
+
+    @ManyToOne(type => Pais, (pais) => pais.provincias, {nullable : true})
+    pais : Pais | null;
 }

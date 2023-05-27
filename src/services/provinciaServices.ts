@@ -37,7 +37,7 @@ const createProvincia = async ({nombre} : provinciaDTO) => {
 const viewAllProvincias = async (pageNumber: number, pageSize: number) => {
   await initRepo();
   const [provinciaFound, totalCount] = await ProvinciaRepository.findAndCount({
-    relations: ["sucursales"],
+    relations: ["sucursales", "pais"],
     skip: (pageNumber - 1) * pageSize,
     take: pageSize});
   if (provinciaFound.length === 0) return false;
