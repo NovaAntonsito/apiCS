@@ -31,7 +31,6 @@ const viewAllEmpresa = async (pageNumber : number, pageSize : number, order : bo
     await initRepo();
     const orderBy = order ? "ASC" : "DESC"
     const [allEmpresas, totalRecords] = await EmpresaRepository.findAndCount({
-        relations: ["empleados"],
         skip: (pageNumber - 1) * pageSize,
         take: pageSize,
         order: {
@@ -51,7 +50,6 @@ const viewAllEmpresa = async (pageNumber : number, pageSize : number, order : bo
 const viewOneEmpresa = async (id : number) =>{
     await initRepo()
     const empresaFound = await EmpresaRepository.findOne({
-        relations: ["empleados"],
         where : {id}
     })
     if(!empresaFound) return false;
