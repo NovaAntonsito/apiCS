@@ -8,7 +8,7 @@ export class Cotizaciones{
     id: number
     @ManyToOne(type => Moneda, moneda => moneda.cotizaciones)
     moneda: Moneda;
-    @Column({name : "valor/precio"})
+    @Column({name : "valor/precio", type:"double"})
     valor : number
     @Column({name : "fecha_Cotizacion"})
     fechaCotizacion : Date
