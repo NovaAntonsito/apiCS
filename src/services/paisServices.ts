@@ -66,7 +66,7 @@ const deletePais = async (id : number) =>{
 const updatePais = async (nombre : string, id : number) =>{
     await initRepo()
     const paisFound = await paisRepository.findOne({where: {id}}) as Pais
-    if (paisFound) return false;
+    if (!paisFound) return false;
     const updatePais = paisRepository.create({nombre})
     const updatedPais = Object.assign(paisFound, updatePais)
     return new ResDTO(id, true, "El pais fue actualizado")
