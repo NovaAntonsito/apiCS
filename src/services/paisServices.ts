@@ -51,7 +51,7 @@ const viewAllPaises = async (pageNumber : number, pageSize : number, order : boo
 const viewOnePais = async (id : number) =>{
     await  initRepo()
     const paisFound = await paisRepository.findOne({relations: ["personas", "provincias"], where: {id}})
-    if (paisFound) return false;
+    if (!paisFound) return false;
     return paisFound;
 }
 
