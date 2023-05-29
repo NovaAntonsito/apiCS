@@ -1,5 +1,4 @@
 import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {Empresa} from "./empresa";
 import {Provincia} from "./provincia";
 import {Pais} from "./pais";
 import {TipoTransaccion} from "./Enums/tipoTransaccion";
@@ -18,10 +17,10 @@ export class Persona {
     @Column({nullable : true})
     razonSocial : string;
 
-    @Column({nullable : true})
+    @Column({nullable : true, type : "varchar"})
     cuit : number;
 
-    @Column()
+    @Column({type: "varchar"})
     telefono : number;
 
     @Column()

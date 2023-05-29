@@ -13,7 +13,9 @@ const DBConfig = new DataSource({
     ],
     extra: {
         connectionLimit: 50,
-    }
+    },
+    synchronize : true
+
 })
 
 
