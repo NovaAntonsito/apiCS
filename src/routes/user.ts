@@ -1,6 +1,5 @@
 import {Router} from 'express'
 import {getAllUser, getOneUser, userDelete} from '../controllers/user';
-import { checkJWT } from '../middlewares/session';
 
 const router = Router();
 

@@ -10,10 +10,18 @@ export class User{
     username: string;
     @Column()
     email : string;
-    @Column({nullable : false})
+    @Column({default : null, nullable : true})
+    urlImagen : string
+    @Column({nullable : true, default: null})
     password : string;
-    @Column({nullable: true})
+    @Column({default : null, nullable : true})
     active : boolean;
+
+    @Column({default : "Propio"})
+    provider : string;
+
+    @Column({unique : true, default : null, nullable : true})
+    providerID : string
 
     @OneToMany(() => Role, (Role) => Role.usuario)
     @JoinTable()

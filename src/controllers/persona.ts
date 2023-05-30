@@ -22,7 +22,7 @@ const getAllPersonas = async ({ query }: Request, res: Response)=>{
     }
 }
 
-const getOnePeronsa = async ({params}: Request, res: Response)=>{
+const getOnePersona = async ({params}: Request, res: Response)=>{
     try {
         const id = parseInt(params.id)
         const personaFound = await viewOnePersona(id)
@@ -77,4 +77,4 @@ const putPersona = async ({params, body}:Request, res:Response)=>{
     }
 }
 
-export {getAllPersonas,getOnePeronsa, putPersona,postPersona,deletePersonaController}
+export {getAllPersonas,getOnePersona, putPersona,postPersona,deletePersonaController}

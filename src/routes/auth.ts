@@ -1,16 +1,17 @@
-import { Router } from 'express';
+import {Router} from 'express';
 import { registerCtrl, loginCtrl } from '../controllers/auth';
-import {Request,Response} from 'express'
+
 import passport from "passport";
+import {handleUser} from "../middlewares/handleUserOAuth";
 
 
 const router = Router()
 
 router.post('/register', registerCtrl)
 
-router.get('/google', passport.authenticate('google'),(req:Request, res:Response)=>{res.send("hola")})
+router.get('/google', passport.authenticate('google', {failureRedirect:'/'}))
 
-router.get('/google/redirect', passport.authenticate('google'), (req:Request, res:Response)=>{res.send("hola")})
+router.get('/google/redirect', passport.authenticate('google',{failureRedirect: '/'}),handleUser)
 
 router.post('/login', loginCtrl)
 
