@@ -1,6 +1,6 @@
-import {TipoTransaccion} from "../../models/Enums/tipoTransaccion";
 import {provinciaDTO} from "./provinciaDTO";
 import {PaisDTO} from "./paisDTO";
+import {TipoDTO} from "./tipoDTO";
 
 export interface PersonaDTO{
 
@@ -8,7 +8,7 @@ export interface PersonaDTO{
 
     nombre: string;
 
-    tipoTransaccion?: TipoTransaccion;
+    tipoTransaccion?: TipoDTO[];
 
     razonSocial?: string;
 

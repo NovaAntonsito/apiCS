@@ -1,7 +1,8 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Provincia} from "./provincia";
 import {Pais} from "./pais";
-import {TipoTransaccion} from "./Enums/tipoTransaccion";
+import {TipoTransaccion} from "./tipoTransaccion";
+
 
 @Entity({name : "persona"})
 export class Persona {
@@ -11,8 +12,8 @@ export class Persona {
     @Column()
     nombre : string;
 
-    @Column({type:"enum", enum :TipoTransaccion, nullable : true })
-    tipoTransaccion : TipoTransaccion;
+    @ManyToMany(() => TipoTransaccion, (tipos) => tipos.personasTipo, {nullable : true, onDelete: "CASCADE"})
+    tipos : TipoTransaccion[] | null;
 
     @Column({nullable : true})
     razonSocial : string;

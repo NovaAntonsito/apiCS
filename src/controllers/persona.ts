@@ -40,6 +40,7 @@ const postPersona = async ({body}:Request, res: Response)=>{
     try {
         const newPersona = await createPersona(body)
         if (!newPersona) throw "La persona ya existe la base de datos"
+        if (typeof newPersona == "string") throw newPersona
         res.send(newPersona)
     }catch (e) {
         res.status(StatusCodes.BAD_REQUEST).json({

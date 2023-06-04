@@ -6,19 +6,19 @@ import {checkJWT} from "../middlewares/Authenticate";
 const router = Router()
 
 //Get All
-router.get('',checkJWT ,getAllPersonas)
+router.get('' ,getAllPersonas)
 
 //Get One
-router.get('/:id',checkJWT,getOnePersona )
+router.get('/:id',getOnePersona )
 
 //Delete
-router.delete('/:id',checkJWT ,deletePersonaController )
+router.delete('/:id' ,deletePersonaController )
 
 //Put-Patch
-router.put('/:id',checkJWT ,putPersona )
+router.put('/:id',putPersona )
 
 //Post
-router.post('',checkJWT ,postPersona)
+router.post('' ,postPersona)
 
 
 

@@ -1,4 +1,5 @@
 import {DataSource} from 'typeorm'
+import {seedTipoTransaccion} from "../models/Seeds/TiposTransaccionSEEDS";
 
 const DBConfig = new DataSource({
     type:'mariadb',
@@ -8,12 +9,12 @@ const DBConfig = new DataSource({
     password: process.env.NODE_ENV === 'development' ? '1234' : process.env.PASSWORD,
     database: process.env.NODE_ENV === 'development' ? 'DB_Local' : process.env.DATABASE,
     entities:[process.env.NODE_ENV === 'development' ?
-      './src/models/*{.ts,.js}' :
-      './build/models/*.js', // afaik building stuffs are js-only
-    ],
+        './src/models/*{.ts,.js}' :
+        './build/models/*.js'],
     extra: {
         connectionLimit: 50,
-    }
+    },
+    synchronize : true
 })
 
 
@@ -21,6 +22,7 @@ const DBConfig = new DataSource({
 
 DBConfig.initialize()
 .then(async() => {
+    await seedTipoTransaccion();
   console.log("Conexion con la base de datos fue exitosa");
 })
 .catch((e) => {
@@ -30,7 +32,6 @@ DBConfig.initialize()
 
 export const getDataSource = (delay = 5000): Promise<DataSource> => {
     if (DBConfig.isInitialized) return Promise.resolve(DBConfig);
-  
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (DBConfig.isInitialized) resolve(DBConfig);
