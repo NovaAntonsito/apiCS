@@ -7,6 +7,7 @@ import {Pais} from "../models/pais";
 import {Provincia} from "../models/provincia";
 import {ResDTO} from "./interfaces/RespuestaDTO";
 import {TipoTransaccion} from "../models/tipoTransaccion";
+import {now} from "moment";
 
 let PersonaRepository : Repository<Persona>
 let PaisRepository : Repository<Pais>
@@ -56,6 +57,7 @@ const createPersona = async ({nombre,tipoTransaccion,razonSocial,cuit,telefono,d
                 tipos : tipoArray,
                 razonSocial,
                 cuit,
+                fechaSubida : new Date(),
                 telefono,
                 direccion,
                 pais : paisFound,
@@ -131,6 +133,7 @@ const updatePersona = async ({nombre,tipoTransaccion,telefono,cuit,direccion,ema
         tipos : tipoArray,
         cuit,
         telefono,
+        fechaSubida : now(),
         direccion,
         pais: paisFound,
         provincia: provinciaFound,

@@ -1,20 +1,20 @@
 import {DataSource} from 'typeorm'
 import {seedTipoTransaccion} from "../models/Seeds/TiposTransaccionSEEDS";
 
+console.log(process.env.NODE_ENV);
 const DBConfig = new DataSource({
-    type:'mariadb',
+    type: 'mariadb',
     host: process.env.NODE_ENV === 'development' ? 'localhost' : process.env.HOST,
     port: 3306,
     username: process.env.NODE_ENV === 'development' ? 'root' : process.env.USER,
     password: process.env.NODE_ENV === 'development' ? '1234' : process.env.PASSWORD,
-    database: process.env.NODE_ENV === 'development' ? 'DB_Local' : process.env.DATABASE,
-    entities:[process.env.NODE_ENV === 'development' ?
+    database: process.env.NODE_ENV === 'development' ? 'db_local' : process.env.DATABASE,
+    entities: [process.env.NODE_ENV === 'development' ?
         './src/models/*{.ts,.js}' :
         './build/models/*.js'],
     extra: {
         connectionLimit: 50,
-    },
-    synchronize : true
+    }
 })
 
 

@@ -17,7 +17,7 @@ export class User{
     @Column({default : null, nullable : true})
     active : boolean;
 
-    @Column({default : "Propio"})
+    @Column({default : "propio"})
     provider : string;
 
     @Column({unique : true, default : null, nullable : true})

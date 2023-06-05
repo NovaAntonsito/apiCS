@@ -4,6 +4,7 @@ import {Pais} from "./pais";
 import {TipoTransaccion} from "./tipoTransaccion";
 
 
+
 @Entity({name : "persona"})
 export class Persona {
     @PrimaryGeneratedColumn()
@@ -23,6 +24,9 @@ export class Persona {
 
     @Column({type: "varchar"})
     telefono : number;
+
+    @Column({type: "datetime"})
+    fechaSubida : Date;
 
     @Column()
     direccion : string;
