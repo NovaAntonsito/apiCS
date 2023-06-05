@@ -83,7 +83,9 @@ const updateProvincia = async ({nombre, id, pais} : provinciaDTO) => {
   await initRepo();
   const provinciaFound = await ProvinciaRepository.findOne({ where: { id  }});
   if (!provinciaFound) return false;
+  console.log(pais)
   const provinciaToUpdate = await ProvinciaRepository.create({ nombre , pais  });
+  console.log(provinciaToUpdate)
   const updatedProvincia = Object.assign(provinciaFound, provinciaToUpdate);
   await ProvinciaRepository.save(updatedProvincia);
   return updatedProvincia;
