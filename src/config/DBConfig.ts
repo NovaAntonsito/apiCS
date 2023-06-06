@@ -1,21 +1,20 @@
 import {DataSource} from 'typeorm'
+import {seedTipoTransaccion} from "../models/Seeds/TiposTransaccionSEEDS";
 
+console.log(process.env.NODE_ENV);
 const DBConfig = new DataSource({
-    type:'mariadb',
+    type: 'mariadb',
     host: process.env.NODE_ENV === 'development' ? 'localhost' : process.env.HOST,
     port: 3306,
     username: process.env.NODE_ENV === 'development' ? 'root' : process.env.USER,
     password: process.env.NODE_ENV === 'development' ? '1234' : process.env.PASSWORD,
-    database: process.env.NODE_ENV === 'development' ? 'DB_Local' : process.env.DATABASE,
-    entities:[process.env.NODE_ENV === 'development' ?
-      './src/models/*{.ts,.js}' :
-      './build/models/*.js', // afaik building stuffs are js-only
-    ],
+    database: process.env.NODE_ENV === 'development' ? 'db_local' : process.env.DATABASE,
+    entities: [process.env.NODE_ENV === 'development' ?
+        './src/models/*{.ts,.js}' :
+        './build/models/*.js'],
     extra: {
         connectionLimit: 50,
-    },
-    //synchronize : true
-
+    }
 })
 
 
@@ -23,6 +22,7 @@ const DBConfig = new DataSource({
 
 DBConfig.initialize()
 .then(async() => {
+    await seedTipoTransaccion();
   console.log("Conexion con la base de datos fue exitosa");
 })
 .catch((e) => {
@@ -32,7 +32,6 @@ DBConfig.initialize()
 
 export const getDataSource = (delay = 5000): Promise<DataSource> => {
     if (DBConfig.isInitialized) return Promise.resolve(DBConfig);
-  
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (DBConfig.isInitialized) resolve(DBConfig);

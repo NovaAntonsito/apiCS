@@ -8,12 +8,18 @@ const checkJWT = (req:Request, res: Response, next: NextFunction)=>{
         const JWT = jwtByUser.split(' ').pop()
         const isValid = verifyToken(`${JWT}`)
         if(!isValid){
-            res.status(StatusCodes.NOT_ACCEPTABLE).send("Session no valida")   
+            res.status(StatusCodes.NOT_ACCEPTABLE).send({
+                success : false,
+                message : "El JWT no es valido"
+            })
         }else{
             next();
         }
     } catch (e) {
-        res.status(StatusCodes.BAD_REQUEST).send("Invalid_Session")
+        res.status(StatusCodes.BAD_REQUEST).send({
+            success : false,
+            message : "El JWT no es valido"
+        })
     }
 }
 

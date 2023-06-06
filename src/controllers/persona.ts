@@ -22,7 +22,7 @@ const getAllPersonas = async ({ query }: Request, res: Response)=>{
     }
 }
 
-const getOnePeronsa = async ({params}: Request, res: Response)=>{
+const getOnePersona = async ({params}: Request, res: Response)=>{
     try {
         const id = parseInt(params.id)
         const personaFound = await viewOnePersona(id)
@@ -40,6 +40,7 @@ const postPersona = async ({body}:Request, res: Response)=>{
     try {
         const newPersona = await createPersona(body)
         if (!newPersona) throw "La persona ya existe la base de datos"
+        if (typeof newPersona == "string") throw newPersona
         res.send(newPersona)
     }catch (e) {
         res.status(StatusCodes.BAD_REQUEST).json({
@@ -77,4 +78,4 @@ const putPersona = async ({params, body}:Request, res:Response)=>{
     }
 }
 
-export {getAllPersonas,getOnePeronsa, putPersona,postPersona,deletePersonaController}
+export {getAllPersonas,getOnePersona, putPersona,postPersona,deletePersonaController}
