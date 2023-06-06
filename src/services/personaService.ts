@@ -6,20 +6,20 @@ import {PersonaDTO} from "./interfaces/PersonaDTO";
 import {Pais} from "../models/pais";
 import {Provincia} from "../models/provincia";
 import {ResDTO} from "./interfaces/RespuestaDTO";
-import {TipoTransaccion} from "../models/tipoTransaccion";
+import {tipoPersona} from "../models/tipoPersona";
 import {now} from "moment";
 
 let PersonaRepository : Repository<Persona>
 let PaisRepository : Repository<Pais>
 let ProvinciaRepositroy : Repository<Provincia>
-let TipoRepository : Repository<TipoTransaccion>
+let TipoRepository : Repository<tipoPersona>
 const initRepo = async () => {
     try {
         const appDataSource = await getDataSource();
         PersonaRepository = appDataSource.getRepository(Persona)
         PaisRepository = appDataSource.getRepository(Pais)
         ProvinciaRepositroy = appDataSource.getRepository(Provincia)
-        TipoRepository = appDataSource.getRepository(TipoTransaccion)
+        TipoRepository = appDataSource.getRepository(tipoPersona)
     } catch (error) {
         console.error(error);
         process.exit(1);
@@ -29,7 +29,7 @@ const initRepo = async () => {
 initRepo();
 
 
-const createPersona = async ({nombre,tipoTransaccion,razonSocial,cuit,telefono,direccion,pais,provincia,email}:PersonaDTO) =>{
+const createPersona = async ({nombre,tipoPersona,razonSocial,cuit,telefono,direccion,pais,provincia,email}:PersonaDTO) =>{
     await initRepo()
     const personaFound = await PersonaRepository.findOne({where:{cuit, nombre}})
     if(personaFound) return false;
@@ -37,10 +37,10 @@ const createPersona = async ({nombre,tipoTransaccion,razonSocial,cuit,telefono,d
     if(pais && provincia){
         const paisFound = await PaisRepository.findOne({where: {id : pais.id}})
         const provinciaFound = await ProvinciaRepositroy.findOne({where:{id : provincia.id}})
-        let tipoArray : TipoTransaccion[] = []
-        if (tipoTransaccion) {
+        let tipoArray : tipoPersona[] = []
+        if (tipoPersona) {
             await Promise.all(
-                tipoTransaccion.map(async (tipo) => {
+                tipoPersona.map(async (tipo) => {
                     const tipoFound = await TipoRepository.findOne({ where: { id: tipo.id } });
                     console.log(tipoFound);
                     if (tipoFound) {
@@ -54,7 +54,7 @@ const createPersona = async ({nombre,tipoTransaccion,razonSocial,cuit,telefono,d
         const createNewPersona = await PersonaRepository.save(
             PersonaRepository.create({
                 nombre,
-                tipos : tipoArray,
+                tipoPersona : tipoArray,
                 razonSocial,
                 cuit,
                 fechaSubida : new Date(),
@@ -76,7 +76,7 @@ const viewAllPersona = async (pageNumber: number, pageSize: number, order: boole
     await initRepo();
     const orderBy = order ? "ASC" : "DESC"
     const [allPersonas, totalRecords] = await PersonaRepository.findAndCount({
-        relations:["pais","provincia", "tipos"],
+        relations:["pais","provincia", "tipoPersona"],
         skip: (pageNumber - 1) * pageSize,
         take: pageSize,
         order: {
@@ -96,7 +96,7 @@ const viewAllPersona = async (pageNumber: number, pageSize: number, order: boole
 
 const viewOnePersona = async (id : number) =>{
     await initRepo()
-    const personaFound = await PersonaRepository.findOne({where:{id}, relations: ["pais","provincia"]})
+    const personaFound = await PersonaRepository.findOne({where:{id}, relations: ["pais","provincia","tipoPersona" ]})
     if(!personaFound) return false
     return personaFound
 }
@@ -109,16 +109,16 @@ const deletePersona = async (id: number) =>{
     return new ResDTO(id, true, "La persona fue borrada de la base de datos")
 }
 
-const updatePersona = async ({nombre,tipoTransaccion,telefono,cuit,direccion,email,razonSocial,pais,provincia}:PersonaDTO, id : number) =>{
+const updatePersona = async ({nombre,tipoPersona,telefono,cuit,direccion,email,razonSocial,pais,provincia}:PersonaDTO, id : number) =>{
     await initRepo()
     const personaFound = await PersonaRepository.findOne({where:{id}}) as Persona
     if(!personaFound) return false;
     const paisFound = await PaisRepository.findOne({where: {id: pais?.id}})
     const provinciaFound = await ProvinciaRepositroy.findOne({where: {id: provincia?.id}})
-    personaFound.tipos = [];
-    let tipoArray : TipoTransaccion[] = []
-    if(tipoTransaccion){
-        tipoTransaccion.map(async (tipo) =>{
+    personaFound.tipoPersona = [];
+    let tipoArray : tipoPersona[] = []
+    if(tipoPersona){
+        tipoPersona.map(async (tipo) =>{
             const tipoFound = await TipoRepository.findOne({where: {id : tipo.id}})
             if(tipoFound){
                 tipoArray.push(tipoFound)
@@ -130,7 +130,7 @@ const updatePersona = async ({nombre,tipoTransaccion,telefono,cuit,direccion,ema
     const createNewPersona = PersonaRepository.create({
         nombre,
         razonSocial,
-        tipos : tipoArray,
+        tipoPersona : tipoArray,
         cuit,
         telefono,
         fechaSubida : now(),

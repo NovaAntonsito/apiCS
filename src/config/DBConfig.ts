@@ -1,5 +1,5 @@
 import {DataSource} from 'typeorm'
-import {seedTipoTransaccion} from "../models/Seeds/TiposTransaccionSEEDS";
+import {seedtipoPersona} from "../models/Seeds/TiposTransaccionSEEDS";
 
 console.log(process.env.NODE_ENV);
 const DBConfig = new DataSource({
@@ -14,7 +14,9 @@ const DBConfig = new DataSource({
         './build/models/*.js'],
     extra: {
         connectionLimit: 50,
-    }
+    },
+    synchronize : true
+
 })
 
 
@@ -22,7 +24,7 @@ const DBConfig = new DataSource({
 
 DBConfig.initialize()
 .then(async() => {
-    await seedTipoTransaccion();
+    await seedtipoPersona();
   console.log("Conexion con la base de datos fue exitosa");
 })
 .catch((e) => {

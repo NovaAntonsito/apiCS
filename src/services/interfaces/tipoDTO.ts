@@ -1,4 +1,4 @@
 export interface TipoDTO{
     id : number
-    tipoTransaccion : string
+    nombre : string
 }

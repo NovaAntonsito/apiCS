@@ -1,7 +1,7 @@
 import {Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Provincia} from "./provincia";
 import {Pais} from "./pais";
-import {TipoTransaccion} from "./tipoTransaccion";
+import {tipoPersona} from "./tipoPersona";
 
 
 
@@ -13,8 +13,8 @@ export class Persona {
     @Column()
     nombre : string;
 
-    @ManyToMany(() => TipoTransaccion, (tipos) => tipos.personasTipo, {nullable : true, onDelete: "CASCADE"})
-    tipos : TipoTransaccion[] | null;
+    @ManyToMany(() => tipoPersona, (tipos) => tipos.personasTipo, {nullable : true, onDelete: "CASCADE"})
+    tipoPersona : tipoPersona[] | null;
 
     @Column({nullable : true})
     razonSocial : string;

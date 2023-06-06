@@ -8,7 +8,7 @@ export interface PersonaDTO{
 
     nombre: string;
 
-    tipoTransaccion?: TipoDTO[];
+    tipoPersona?: TipoDTO[];
 
     razonSocial?: string;
 

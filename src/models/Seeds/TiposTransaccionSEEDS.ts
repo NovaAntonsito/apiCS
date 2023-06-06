@@ -1,23 +1,23 @@
 import {getDataSource} from "../../config/DBConfig";
-import { TipoTransaccion } from '../tipoTransaccion';
+import { tipoPersona } from '../tipoPersona';
 
-export async function seedTipoTransaccion() {
+export async function seedtipoPersona() {
     const appDataSource = await getDataSource();
     const tipoTransaccionesData = [
-        { tipoTransaccion: 'BANCO' },
-        { tipoTransaccion: 'CORRESPONSAL' },
-        { tipoTransaccion: 'EMPRESA' },
+        { nombre: 'BANCO' },
+        { nombre: 'CORRESPONSAL' },
+        { nombre: 'EMPRESA' },
     ];
 
-    const tipoTransaccionRepository = appDataSource.getRepository(TipoTransaccion);
-    const existingTipoTransacciones = await tipoTransaccionRepository.find();
+    const tipoPersonaRepository = appDataSource.getRepository(tipoPersona);
+    const existingtipoPersona = await tipoPersonaRepository.find();
 
     const tipoTransaccionesToInsert = tipoTransaccionesData.filter(
-        data => !existingTipoTransacciones.some(tipoTransaccion => tipoTransaccion.tipoTransaccion === data.tipoTransaccion)
+        data => !existingtipoPersona.some(tipoPersona => tipoPersona.nombre === data.nombre)
     );
 
     if (tipoTransaccionesToInsert.length > 0) {
-        const tipoTransacciones = tipoTransaccionesToInsert.map(data => tipoTransaccionRepository.create(data));
-        await tipoTransaccionRepository.save(tipoTransacciones);
+        const tipoPersona = tipoTransaccionesToInsert.map(data => tipoPersonaRepository.create(data));
+        await tipoPersonaRepository.save(tipoPersona);
     }
 }

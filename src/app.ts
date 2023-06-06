@@ -6,7 +6,6 @@ import express from 'express';
 import passport from "passport";
 import session from "express-session";
 import cookieParser from "cookie-parser";
-import {seedTipoTransaccion} from "./models/Seeds/TiposTransaccionSEEDS";
 require('./utils/strategies')
 
 const app = express();
