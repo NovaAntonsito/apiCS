@@ -1,5 +1,5 @@
 import {getDataSource} from "../../config/DBConfig";
-import { tipoPersona } from '../tipoPersona';
+import { TipoPersona } from '../tipoPersona';
 
 export async function seedtipoPersona() {
     const appDataSource = await getDataSource();
@@ -9,7 +9,7 @@ export async function seedtipoPersona() {
         { nombre: 'EMPRESA' },
     ];
 
-    const tipoPersonaRepository = appDataSource.getRepository(tipoPersona);
+    const tipoPersonaRepository = appDataSource.getRepository(TipoPersona);
     const existingtipoPersona = await tipoPersonaRepository.find();
 
     const tipoTransaccionesToInsert = tipoTransaccionesData.filter(

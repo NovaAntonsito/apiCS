@@ -2,7 +2,7 @@ import {Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn} from "typ
 
 import {Persona} from "./persona";
 @Entity({name : "tipoPersona"})
-export class tipoPersona {
+export class TipoPersona {
     @PrimaryGeneratedColumn()
     id: number
 

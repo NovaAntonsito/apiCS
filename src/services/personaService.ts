@@ -6,20 +6,20 @@ import {PersonaDTO} from "./interfaces/PersonaDTO";
 import {Pais} from "../models/pais";
 import {Provincia} from "../models/provincia";
 import {ResDTO} from "./interfaces/RespuestaDTO";
-import {tipoPersona} from "../models/tipoPersona";
+import {TipoPersona} from "../models/tipoPersona";
 import {now} from "moment";
 
 let PersonaRepository : Repository<Persona>
 let PaisRepository : Repository<Pais>
 let ProvinciaRepositroy : Repository<Provincia>
-let TipoRepository : Repository<tipoPersona>
+let TipoRepository : Repository<TipoPersona>
 const initRepo = async () => {
     try {
         const appDataSource = await getDataSource();
         PersonaRepository = appDataSource.getRepository(Persona)
         PaisRepository = appDataSource.getRepository(Pais)
         ProvinciaRepositroy = appDataSource.getRepository(Provincia)
-        TipoRepository = appDataSource.getRepository(tipoPersona)
+        TipoRepository = appDataSource.getRepository(TipoPersona)
     } catch (error) {
         console.error(error);
         process.exit(1);
@@ -37,7 +37,7 @@ const createPersona = async ({nombre,tipoPersona,razonSocial,cuit,telefono,direc
     if(pais && provincia){
         const paisFound = await PaisRepository.findOne({where: {id : pais.id}})
         const provinciaFound = await ProvinciaRepositroy.findOne({where:{id : provincia.id}})
-        let tipoArray : tipoPersona[] = []
+        let tipoArray : TipoPersona[] = []
         if (tipoPersona) {
             await Promise.all(
                 tipoPersona.map(async (tipo) => {
@@ -51,13 +51,14 @@ const createPersona = async ({nombre,tipoPersona,razonSocial,cuit,telefono,direc
                 })
             );
         }
+        const fechaCotizacionActual = new Date()
         const createNewPersona = await PersonaRepository.save(
             PersonaRepository.create({
                 nombre,
                 tipoPersona : tipoArray,
                 razonSocial,
                 cuit,
-                fechaSubida : new Date(),
+                fechaSubida : fechaCotizacionActual,
                 telefono,
                 direccion,
                 pais : paisFound,
@@ -116,30 +117,35 @@ const updatePersona = async ({nombre,tipoPersona,telefono,cuit,direccion,email,r
     const paisFound = await PaisRepository.findOne({where: {id: pais?.id}})
     const provinciaFound = await ProvinciaRepositroy.findOne({where: {id: provincia?.id}})
     personaFound.tipoPersona = [];
-    let tipoArray : tipoPersona[] = []
+    let tipoArray : TipoPersona[] = []
     if(tipoPersona){
-        tipoPersona.map(async (tipo) =>{
-            const tipoFound = await TipoRepository.findOne({where: {id : tipo.id}})
-            if(tipoFound){
-                tipoArray.push(tipoFound)
-            }else{
-                return "No existe esa transaccion"
-            }
-        })
+        await Promise.all(
+            tipoPersona.map(async (tipo) => {
+                const tipoFound = await TipoRepository.findOne({ where: { id: tipo.id } });
+                console.log(tipoFound);
+                if (tipoFound) {
+                    tipoArray.push(tipoFound);
+                } else {
+                    throw new Error("No existe esa transaccion");
+                }
+            })
+        );
     }
+    const fechaCotizacionActual = new Date()
     const createNewPersona = PersonaRepository.create({
         nombre,
         razonSocial,
         tipoPersona : tipoArray,
         cuit,
         telefono,
-        fechaSubida : now(),
+        fechaSubida : fechaCotizacionActual,
         direccion,
         pais: paisFound,
         provincia: provinciaFound,
         email
     })
-
+    console.log("createNewPersona")
+    console.log(createNewPersona)
     const updatedPersona = Object.assign(personaFound, createNewPersona)
     await PersonaRepository.save(updatedPersona)
     return new ResDTO(id, true, "La persona fue actualizado")
