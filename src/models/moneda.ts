@@ -1,5 +1,6 @@
 import {Column, Entity,OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Cotizaciones} from "./cotizacion";
+import {NacionalidadMoneda} from "./Enums/nacionalidadMoneda";
 
 @Entity({name:"moneda"})
 export class Moneda{
@@ -13,4 +14,6 @@ export class Moneda{
     cotizaciones: Cotizaciones[];
     @Column({name : "locale"})
     locale : string;
+    @Column({type : "enum", enum : NacionalidadMoneda})
+    tipoNacionalidad : NacionalidadMoneda
 }

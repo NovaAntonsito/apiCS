@@ -1,7 +1,6 @@
 import {DataSource} from 'typeorm'
-import {seedtipoPersona} from "../models/Seeds/TiposTransaccionSEEDS";
+import {seedtipoPersona} from "../models/Seeds/TiposPersonaSEEDS";
 
-console.log(process.env.NODE_ENV);
 const DBConfig = new DataSource({
     type: 'mariadb',
     host: process.env.NODE_ENV === 'development' ? 'localhost' : process.env.HOST,
@@ -13,10 +12,9 @@ const DBConfig = new DataSource({
         './src/models/*{.ts,.js}' :
         './build/models/*.js'],
     extra: {
-        connectionLimit: 50,
+        connectionLimit: 50
     },
-    //synchronize : true
-
+    synchronize : true
 })
 
 

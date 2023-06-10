@@ -69,6 +69,7 @@ const updatePais = async (nombre : string, id : number) =>{
     if (!paisFound) return false;
     const updatePais = paisRepository.create({nombre})
     const updatedPais = Object.assign(paisFound, updatePais)
+    await paisRepository.save(updatedPais)
     return new ResDTO(id, true, "El pais fue actualizado")
 }
 

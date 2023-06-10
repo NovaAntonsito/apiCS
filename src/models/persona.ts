@@ -1,7 +1,9 @@
-import {Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, JoinColumn} from "typeorm";
 import {Provincia} from "./provincia";
 import {Pais} from "./pais";
 import {TipoPersona} from "./tipoPersona";
+import {Cuenta} from "./cuenta";
+
 
 
 
@@ -39,5 +41,9 @@ export class Persona {
 
     @Column()
     email : string;
+
+    @OneToOne(()=>Cuenta, (cuenta) =>cuenta.persona)
+    @JoinColumn({name : "cuenta_per_id"})
+    cuenta : Cuenta;
 
 }
