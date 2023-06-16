@@ -31,6 +31,7 @@ const createMoneda = async ({codigo,nombre,locale, tipoNacionalidad}:MonedaDTO) 
 const viewAllMonedas = async (pageNumber: number, pageSize: number) =>{
     await initRepo()
     const [monedasFound,totalCount ] = await monedaRepository.findAndCount({
+        relations : ["ctas"],
         skip: (pageNumber - 1) * pageSize,
         take: pageSize
     });
