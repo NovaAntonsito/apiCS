@@ -1,4 +1,4 @@
-import {Column, Entity,OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Cotizaciones} from "./cotizacion";
 import {NacionalidadMoneda} from "./Enums/nacionalidadMoneda";
 import {CuentaCorriente} from "./CuentaCorriente";
@@ -18,6 +18,6 @@ export class Moneda{
     @Column({type : "enum", enum : NacionalidadMoneda})
     tipoNacionalidad : NacionalidadMoneda
 
-    @OneToMany(()=>CuentaCorriente, (cta) => cta.moneda)
-    ctas : CuentaCorriente[] | null;
+    @OneToOne(()=>CuentaCorriente, (cta) => cta.moneda)
+    ctas : CuentaCorriente | null;
 }

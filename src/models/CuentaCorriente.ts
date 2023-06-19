@@ -1,6 +1,7 @@
-import {Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Persona} from "./persona";
 import {Moneda} from "./moneda";
+import {MovimientoCaja} from "./MovimientoCaja";
 
 @Entity({name : "Cuenta_Corriente"})
 export class CuentaCorriente {
@@ -9,12 +10,15 @@ export class CuentaCorriente {
     id : number;
     @OneToOne(()=>Persona, (per) => per.cta)
     @JoinColumn({name : "persona_id_fk"})
-    persona : Persona;
+    persona : Persona | null;
 
-    @ManyToOne(()=>Moneda, (moneda) =>moneda.ctas)
+    @OneToOne(()=>Moneda, (moneda) =>moneda.ctas)
     @JoinColumn({name : "moneda_id_fk"})
-    moneda : Moneda;
+    moneda : Moneda | null;
 
     @Column({type: "varchar", nullable : false})
     saldo : number;
+
+    @OneToMany(()=> MovimientoCaja, (mov) => mov.cta)
+    movimiento : MovimientoCaja[]
 }
