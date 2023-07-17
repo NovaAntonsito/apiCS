@@ -79,6 +79,27 @@ const forgotPass = async ({email, password}: userDTO) =>{
   return userFound;
 }
 
+const addSucursalesToUser = async (id : number,{sucursales}: userDTO) =>{
+  await initRepo();
+  const userFound = await UserRepository.findOne({where:{id}})
+  if(!userFound) return false;
+  let SucursalesFound : Sucursales[] = [];
+  if (sucursales) {
+    sucursales.map(async (sucursal) => {
+      const sucursalFound = await SucursalRepository.findOne({where:{id : sucursal.id}}) as Sucursales;
+      if(sucursalFound){
+        SucursalesFound.push(sucursalFound);
+      }else{
+        console.log("No existe esa sucursal")
+      }
+    })
+  }
+  const userUpdate = await UserRepository.create({sucursales : SucursalesFound})
+  const userUpdated = Object.assign(userFound, userUpdate)
+  await UserRepository.save(userUpdated);
+  return new ResDTO(id, true, "Se añadieron sucursales al usuario")
+}
+
 
 
 export { registerNewUser, loginUser, forgotPass };
