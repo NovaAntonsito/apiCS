@@ -13,8 +13,7 @@ const DBConfig = new DataSource({
         './build/models/*.js'],
     extra: {
         connectionLimit: 50
-    },
-    synchronize : true
+    }
 })
 
 

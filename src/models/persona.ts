@@ -3,6 +3,7 @@ import {Provincia} from "./provincia";
 import {Pais} from "./pais";
 import {TipoPersona} from "./tipoPersona";
 import {Cuenta} from "./cuenta";
+import {CuentaCorriente} from "./CuentaCorriente";
 
 
 
@@ -45,5 +46,8 @@ export class Persona {
     @OneToOne(()=>Cuenta, (cuenta) =>cuenta.persona)
     @JoinColumn({name : "cuenta_per_id"})
     cuenta : Cuenta;
+
+    @OneToOne(()=>CuentaCorriente, (corr) => corr.persona)
+    cta : CuentaCorriente;
 
 }
